@@ -1,39 +1,35 @@
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class EventUIController : MonoBehaviour
 {
-    [Header("Event Data")]
-    [SerializeField] private EventDefinition currentEvent;
-
     [Header("UI References")]
-    [SerializeField] private TMP_Text eventTitleText;
     [SerializeField] private TMP_Text eventDescriptionText;
-
-    [SerializeField] private Button choiceAButton;
-    [SerializeField] private Button choiceBButton;
-    [SerializeField] private Button choiceCButton;
+    [SerializeField] private TMP_Text eventTitleText;
 
     [SerializeField] private TMP_Text choiceAText;
     [SerializeField] private TMP_Text choiceBText;
     [SerializeField] private TMP_Text choiceCText;
 
+    private EventDefinition currentEvent;
+
     private void Start()
     {
-        DisplayEvent();
+        LoadCurrentEvent();
     }
 
-    private void DisplayEvent()
+    private void LoadCurrentEvent()
     {
+        currentEvent = EventManager.Instance.GetCurrentEvent();
+
         if (currentEvent == null)
         {
-            Debug.LogError("Current Event is not assigned in EventUIController.");
+            Debug.LogError("No current event found.");
             return;
         }
 
-        eventTitleText.text = currentEvent.eventTitle;
         eventDescriptionText.text = currentEvent.description;
+        eventTitleText.text = currentEvent.eventTitle;
 
         choiceAText.text = currentEvent.choiceA.choiceText;
         choiceBText.text = currentEvent.choiceB.choiceText;
@@ -63,6 +59,7 @@ public class EventUIController : MonoBehaviour
 
         GameState.Instance.NextDay();
 
-        Debug.Log("Choice selected: " + choice.choiceText);
+        EventManager.Instance.GoToNextEvent();
+        LoadCurrentEvent();
     }
 }
