@@ -6,7 +6,8 @@ public class EventManager : MonoBehaviour
 
     [SerializeField] private EventDefinition[] events;
 
-    private int currentEventIndex = 0;
+    private EventDefinition currentEvent;
+    private int currentEventIndex = -1;
 
     private void Awake()
     {
@@ -16,27 +17,47 @@ public class EventManager : MonoBehaviour
             Destroy(gameObject);
     }
 
+    private void Start()
+    {
+        PickRandomEvent();
+    }
+
     public EventDefinition GetCurrentEvent()
+    {
+        if (currentEvent == null)
+        {
+            Debug.LogError("No current event selected.");
+        }
+
+        return currentEvent;
+    }
+
+    public void PickRandomEvent()
     {
         if (events == null || events.Length == 0)
         {
             Debug.LogError("EventManager has no events assigned.");
-            return null;
+            return;
         }
 
-        return events[currentEventIndex];
-    }
-
-    public void GoToNextEvent()
-    {
-        if (events == null || events.Length == 0)
-            return;
-
-        currentEventIndex++;
-
-        if (currentEventIndex >= events.Length)
+        if (events.Length == 1)
         {
             currentEventIndex = 0;
+            currentEvent = events[0];
+            return;
         }
+
+        int newIndex;
+
+        do
+        {
+            newIndex = Random.Range(0, events.Length);
+        }
+        while (newIndex == currentEventIndex);
+
+        currentEventIndex = newIndex;
+        currentEvent = events[currentEventIndex];
+
+        Debug.Log("Selected event: " + currentEvent.eventTitle);
     }
 }

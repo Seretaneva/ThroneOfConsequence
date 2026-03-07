@@ -52,14 +52,14 @@ public class EventUIController : MonoBehaviour
     }
 
     private void ApplyChoice(ChoiceData choice)
-    {
-        GameState.Instance.AddGold(choice.goldEffect);
-        GameState.Instance.AddIntelligence(choice.intelligenceEffect);
-        GameState.Instance.AddRespect(choice.respectEffect);
+{
+    GameState.Instance.AddGold(choice.goldEffect);
+    GameState.Instance.AddIntelligence(choice.intelligenceEffect);
+    GameState.Instance.AddRespect(choice.respectEffect);
 
-        GameState.Instance.NextDay();
+    GameState.Instance.NextDay();
 
-        EventManager.Instance.GoToNextEvent();
-        LoadCurrentEvent();
-    }
+    EventManager.Instance.PickRandomEvent();
+    LoadCurrentEvent();
+}
 }

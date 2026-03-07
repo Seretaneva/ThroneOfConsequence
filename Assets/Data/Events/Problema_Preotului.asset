@@ -12,20 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7899f1b3e072afe47aae7961cc46ebea, type: 3}
   m_Name: Problema_Preotului
   m_EditorClassIdentifier: Assembly-CSharp::EventDefinition
-  eventTitle: 
-  description: 
+  eventTitle: Preotul si problemele
+  description: Preotul vine grabit catre tine si zice ca trebuie mai multi bani pentru
+    imputernicirea bisericii!
   choiceA:
-    choiceText: 
-    goldEffect: 0
-    intelligenceEffect: 0
-    respectEffect: 0
+    choiceText: Ofer banii necesari
+    goldEffect: -15
+    intelligenceEffect: 2
+    respectEffect: 3
   choiceB:
-    choiceText: 
+    choiceText: Ignor cerinta
     goldEffect: 0
-    intelligenceEffect: 0
-    respectEffect: 0
+    intelligenceEffect: -3
+    respectEffect: -5
   choiceC:
-    choiceText: 
+    choiceText: Impun poporul sa mearga obligatoriu la biserica
     goldEffect: 0
-    intelligenceEffect: 0
-    respectEffect: 0
+    intelligenceEffect: 2
+    respectEffect: -7
