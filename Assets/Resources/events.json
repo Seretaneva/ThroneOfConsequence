@@ -1,0 +1,48 @@
+{
+  "events": [
+    {
+      "eventTitle": "Taranul si granele furate",
+      "description": "Un taran intra in sala tronului si spune ca i-au fost furate granele. Ce faci?",
+      "choiceA": {
+        "choiceText": "Il ajut din rezervele castelului",
+        "goldEffect": -10,
+        "intelligenceEffect": 0,
+        "respectEffect": 5
+      },
+      "choiceB": {
+        "choiceText": "Il ignor",
+        "goldEffect": 0,
+        "intelligenceEffect": 0,
+        "respectEffect": -5
+      },
+      "choiceC": {
+        "choiceText": "Trimit garzile sa caute hotii",
+        "goldEffect": -5,
+        "intelligenceEffect": 2,
+        "respectEffect": 3
+      }
+    },
+    {
+      "eventTitle": "Vaduva si taxele",
+      "description": "O vaduva spune ca nu poate plati taxele lunii. Ce decizi?",
+      "choiceA": {
+        "choiceText": "O scutesc de taxe",
+        "goldEffect": -8,
+        "intelligenceEffect": 0,
+        "respectEffect": 4
+      },
+      "choiceB": {
+        "choiceText": "Plateste ca toti ceilalti",
+        "goldEffect": 5,
+        "intelligenceEffect": 0,
+        "respectEffect": -4
+      },
+      "choiceC": {
+        "choiceText": "Ii ofer munca la castel",
+        "goldEffect": -2,
+        "intelligenceEffect": 2,
+        "respectEffect": 2
+      }
+    }
+  ]
+}

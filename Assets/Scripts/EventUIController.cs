@@ -11,7 +11,7 @@ public class EventUIController : MonoBehaviour
     [SerializeField] private TMP_Text choiceBText;
     [SerializeField] private TMP_Text choiceCText;
 
-    private EventDefinition currentEvent;
+    private EventData currentEvent;
 
     private void Start()
     {
@@ -52,14 +52,12 @@ public class EventUIController : MonoBehaviour
     }
 
     private void ApplyChoice(ChoiceData choice)
-{
-    GameState.Instance.AddGold(choice.goldEffect);
-    GameState.Instance.AddIntelligence(choice.intelligenceEffect);
-    GameState.Instance.AddRespect(choice.respectEffect);
+    {
+        GameState.Instance.AddGold(choice.goldEffect);
+        GameState.Instance.AddIntelligence(choice.intelligenceEffect);
+        GameState.Instance.AddRespect(choice.respectEffect);
 
-    GameState.Instance.NextDay();
-
-    EventManager.Instance.PickRandomEvent();
-    LoadCurrentEvent();
-}
+        EventManager.Instance.PickRandomEvent();
+        LoadCurrentEvent();
+    }
 }

@@ -1,12 +1,12 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class EventManager : MonoBehaviour
 {
     public static EventManager Instance { get; private set; }
 
-    [SerializeField] private EventDefinition[] events;
-
-    private EventDefinition currentEvent;
+    private List<EventData> events;
+    private EventData currentEvent;
     private int currentEventIndex = -1;
 
     private void Awake()
@@ -19,28 +19,30 @@ public class EventManager : MonoBehaviour
 
     private void Start()
     {
+        if (EventDatabaseLoader.LoadedDatabase == null || EventDatabaseLoader.LoadedDatabase.events == null)
+        {
+            Debug.LogError("Event database was not loaded.");
+            return;
+        }
+
+        events = EventDatabaseLoader.LoadedDatabase.events;
         PickRandomEvent();
     }
 
-    public EventDefinition GetCurrentEvent()
+    public EventData GetCurrentEvent()
     {
-        if (currentEvent == null)
-        {
-            Debug.LogError("No current event selected.");
-        }
-
         return currentEvent;
     }
 
     public void PickRandomEvent()
     {
-        if (events == null || events.Length == 0)
+        if (events == null || events.Count == 0)
         {
-            Debug.LogError("EventManager has no events assigned.");
+            Debug.LogError("No events loaded.");
             return;
         }
 
-        if (events.Length == 1)
+        if (events.Count == 1)
         {
             currentEventIndex = 0;
             currentEvent = events[0];
@@ -51,7 +53,7 @@ public class EventManager : MonoBehaviour
 
         do
         {
-            newIndex = Random.Range(0, events.Length);
+            newIndex = Random.Range(0, events.Count);
         }
         while (newIndex == currentEventIndex);
 
