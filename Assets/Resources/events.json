@@ -20,29 +20,43 @@
         "goldEffect": -5,
         "intelligenceEffect": 2,
         "respectEffect": 3
-      }
+      },
+      "minGold": 0,
+      "maxGold": 9999,
+      "minRespect": 0,
+      "maxRespect": 9999,
+      "minIntelligence": 0,
+      "maxIntelligence": 9999,
+      "tags": ["peasant", "crime"]
     },
     {
-      "eventTitle": "Vaduva si taxele",
-      "description": "O vaduva spune ca nu poate plati taxele lunii. Ce decizi?",
+      "eventTitle": "Lipsa painii in sat",
+      "description": "Satenii spun ca pretul painii a crescut prea mult.",
       "choiceA": {
-        "choiceText": "O scutesc de taxe",
-        "goldEffect": -8,
-        "intelligenceEffect": 0,
+        "choiceText": "Scad taxele pentru brutari",
+        "goldEffect": -6,
+        "intelligenceEffect": 1,
         "respectEffect": 4
       },
       "choiceB": {
-        "choiceText": "Plateste ca toti ceilalti",
-        "goldEffect": 5,
+        "choiceText": "Nu fac nimic",
+        "goldEffect": 0,
         "intelligenceEffect": 0,
         "respectEffect": -4
       },
       "choiceC": {
-        "choiceText": "Ii ofer munca la castel",
+        "choiceText": "Rationalizez rezervele",
         "goldEffect": -2,
-        "intelligenceEffect": 2,
-        "respectEffect": 2
-      }
+        "intelligenceEffect": 3,
+        "respectEffect": 1
+      },
+      "minGold": 0,
+      "maxGold": 20,
+      "minRespect": 0,
+      "maxRespect": 9999,
+      "minIntelligence": 0,
+      "maxIntelligence": 9999,
+      "tags": ["food", "peasant", "crisis"]
     }
   ]
 }

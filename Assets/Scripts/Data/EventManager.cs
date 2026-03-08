@@ -42,24 +42,39 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        if (events.Count == 1)
+        List<int> validIndexes = new List<int>();
+
+        for (int i = 0; i < events.Count; i++)
         {
-            currentEventIndex = 0;
-            currentEvent = events[0];
+            if (IsEventValid(events[i]) && i != currentEventIndex)
+            {
+                validIndexes.Add(i);
+            }
+        }
+
+        if (validIndexes.Count == 0)
+        {
+            Debug.LogWarning("No valid events found. Keeping current event.");
             return;
         }
 
-        int newIndex;
-
-        do
-        {
-            newIndex = Random.Range(0, events.Count);
-        }
-        while (newIndex == currentEventIndex);
-
-        currentEventIndex = newIndex;
+        int randomListIndex = Random.Range(0, validIndexes.Count);
+        currentEventIndex = validIndexes[randomListIndex];
         currentEvent = events[currentEventIndex];
 
-        Debug.Log("Selected event: " + currentEvent.eventTitle);
+        Debug.Log("Selected valid event: " + currentEvent.eventTitle);
+    }
+
+    private bool IsEventValid(EventData eventData)
+    {
+        int gold = GameState.Instance.Gold;
+        int respect = GameState.Instance.Respect;
+        int intelligence = GameState.Instance.Intelligence;
+
+        bool validGold = gold >= eventData.minGold && gold <= eventData.maxGold;
+        bool validRespect = respect >= eventData.minRespect && respect <= eventData.maxRespect;
+        bool validIntelligence = intelligence >= eventData.minIntelligence && intelligence <= eventData.maxIntelligence;
+
+        return validGold && validRespect && validIntelligence;
     }
 }
