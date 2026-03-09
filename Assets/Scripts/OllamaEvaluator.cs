@@ -45,7 +45,7 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
             "  \"intelligenceEffect\": 0,\n" +
             "  \"reason\": \"o singura propozitie scurta\"\n" +
             "}";
-
+        
         OllamaChatRequest requestData = new OllamaChatRequest
         {
             model = modelName,
