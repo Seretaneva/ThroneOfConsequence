@@ -11,6 +11,10 @@ public class EventUIController : MonoBehaviour
     [SerializeField] private TMP_Text choiceBText;
     [SerializeField] private TMP_Text choiceCText;
 
+    [SerializeField] private TMP_InputField freeTextInput;
+    [SerializeField] private OllamaEvaluator ollamaEvaluator;
+    [SerializeField] private TMP_Text feedbackText;
+
     private EventData currentEvent;
 
     private void Start()
@@ -59,5 +63,52 @@ public class EventUIController : MonoBehaviour
 
         EventManager.Instance.PickRandomEvent();
         LoadCurrentEvent();
+    }
+
+    public void SubmitFreeTextResponse()
+    {
+        
+        string playerResponse = freeTextInput.text;
+
+        if (freeTextInput == null)
+        {
+            Debug.LogError("freeTextInput nu este legat in Inspector.");
+            return;
+        }
+
+        if (string.IsNullOrWhiteSpace(playerResponse))
+        {
+            if (feedbackText != null)
+                feedbackText.text = "Scrie un raspuns mai intai.";
+            return;
+        }
+
+        if (feedbackText != null)
+            feedbackText.text = "Se analizeaza raspunsul...";
+
+        StartCoroutine(ollamaEvaluator.EvaluateResponse(
+            currentEvent.eventTitle,
+            currentEvent.description,
+            playerResponse,
+            onSuccess: result =>
+            {
+                GameState.Instance.AddGold(result.goldEffect);
+                GameState.Instance.AddRespect(result.respectEffect);
+                GameState.Instance.AddIntelligence(result.intelligenceEffect);
+
+                if (feedbackText != null)
+                    feedbackText.text = result.reason;
+
+                freeTextInput.text = "";
+
+                EventManager.Instance.PickRandomEvent();
+                LoadCurrentEvent();
+            },
+            onError: error =>
+            {
+                if (feedbackText != null)
+                    feedbackText.text = error;
+            }
+        ));
     }
 }
