@@ -6,7 +6,7 @@ using UnityEngine.Networking;
 
 public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
 {
-    [SerializeField] private string modelName = "gemma3:12b";
+    [SerializeField] private string modelName = "qwen2.5:7b-instruct";
     [SerializeField] private string apiUrl = "http://localhost:11434/api/chat";
 
     public IEnumerator EvaluateResponse(
