@@ -42,27 +42,26 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        List<int> validIndexes = new List<int>();
+        List<EventData> validEvents = new List<EventData>();
 
-        for (int i = 0; i < events.Count; i++)
+        foreach (var ev in events)
         {
-            if (IsEventValid(events[i]) && i != currentEventIndex)
+            if (!string.IsNullOrEmpty(ev.requiredFlag))
             {
-                validIndexes.Add(i);
+                if (!GameFlags.HasFlag(ev.requiredFlag))
+                    continue;
             }
+
+            validEvents.Add(ev);
         }
 
-        if (validIndexes.Count == 0)
+        if (validEvents.Count == 0)
         {
-            Debug.LogWarning("No valid events found. Keeping current event.");
+            Debug.LogWarning("No valid events found.");
             return;
         }
 
-        int randomListIndex = Random.Range(0, validIndexes.Count);
-        currentEventIndex = validIndexes[randomListIndex];
-        currentEvent = events[currentEventIndex];
-
-        Debug.Log("Selected valid event: " + currentEvent.eventTitle);
+        currentEvent = validEvents[Random.Range(0, validEvents.Count)];
     }
 
     private bool IsEventValid(EventData eventData)

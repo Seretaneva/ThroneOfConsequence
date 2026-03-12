@@ -21,4 +21,6 @@ public class EventData
     public int maxIntelligence = 9999;
 
     public List<string> tags;
+    
+    public string requiredFlag;
 }

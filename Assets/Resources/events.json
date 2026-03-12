@@ -1,33 +1,42 @@
 {
   "events": [
+    
+      {
+        "eventTitle": "Un taran cere ajutor",
+        "description": "Un taran spune ca i-au fost furate granele.",
+        "choiceA": {
+          "choiceText": "Il ajut din rezerve",
+          "goldEffect": -3,
+          "respectEffect": 4,
+          "intelligenceEffect": 0,
+          "setFlag": "helped_peasants"
+        },
+        "choiceB": {
+          "choiceText": "Il ignor",
+          "goldEffect": 0,
+          "respectEffect": -3,
+          "intelligenceEffect": 0
+        }
+
+    },
     {
-      "eventTitle": "Taranul si granele furate",
-      "description": "Un taran intra in sala tronului si spune ca i-au fost furate granele. Ce faci?",
+      "eventTitle": "Satul iti multumeste",
+      "description": "Satenii vin cu daruri pentru ajutorul oferit.",
+      "requiredFlag": "helped_peasants",
+
       "choiceA": {
-        "choiceText": "Il ajut din rezervele castelului",
-        "goldEffect": -10,
-        "intelligenceEffect": 0,
-        "respectEffect": 5
+        "choiceText": "Accept darurile",
+        "goldEffect": 3,
+        "respectEffect": 2,
+        "intelligenceEffect": 0
       },
+
       "choiceB": {
-        "choiceText": "Il ignor",
+        "choiceText": "Refuz politicos",
         "goldEffect": 0,
-        "intelligenceEffect": 0,
-        "respectEffect": -5
-      },
-      "choiceC": {
-        "choiceText": "Trimit garzile sa caute hotii",
-        "goldEffect": -5,
-        "intelligenceEffect": 2,
-        "respectEffect": 3
-      },
-      "minGold": 0,
-      "maxGold": 9999,
-      "minRespect": 0,
-      "maxRespect": 9999,
-      "minIntelligence": 0,
-      "maxIntelligence": 9999,
-      "tags": ["peasant", "crime"]
+        "respectEffect": 3,
+        "intelligenceEffect": 1
+      }
     },
     {
       "eventTitle": "Lipsa painii in sat",

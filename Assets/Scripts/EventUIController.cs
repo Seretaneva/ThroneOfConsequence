@@ -114,15 +114,14 @@ public class EventUIController : MonoBehaviour
 
     private void ResolveChoice(ChoiceData choice, string reason)
     {
-        if (choice == null)
-        {
-            Debug.LogError("Choice is null.");
-            return;
-        }
-
         GameState.Instance.AddGold(choice.goldEffect);
         GameState.Instance.AddRespect(choice.respectEffect);
         GameState.Instance.AddIntelligence(choice.intelligenceEffect);
+
+        if (!string.IsNullOrEmpty(choice.setFlag))
+        {
+            GameFlags.SetFlag(choice.setFlag);
+        }
 
         pendingGoldEffect = choice.goldEffect;
         pendingRespectEffect = choice.respectEffect;

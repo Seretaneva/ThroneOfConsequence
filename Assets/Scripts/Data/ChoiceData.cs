@@ -9,4 +9,7 @@ public class ChoiceData
     public int goldEffect;
     public int intelligenceEffect;
     public int respectEffect;
+
+    public string setFlag;
+    public string requiredFlag;
 }
