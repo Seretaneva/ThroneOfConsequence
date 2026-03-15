@@ -78,6 +78,370 @@
       "minIntelligence": 0,
       "maxIntelligence": 9999,
       "tags": ["food", "peasant", "crisis"]
+    },
+    
+  {
+    "eventTitle": "Negustorul strain",
+    "description": "Un negustor dintr-un regat indepartat cere permisiunea sa vanda marfuri in imperiul tau.",
+    "choiceA": {
+      "choiceText": "Ii permit sa faca comert",
+      "goldEffect": 4,
+      "respectEffect": 1,
+      "intelligenceEffect": 1,
+      "consequenceText": "Comertul infloreste in piete, iar vistieria imperiului incepe sa se umple treptat."
+    },
+    "choiceB": {
+      "choiceText": "Il alung din oras",
+      "goldEffect": 0,
+      "respectEffect": -2,
+      "intelligenceEffect": 0,
+      "consequenceText": "Negustorul pleaca nemultumit, iar zvonurile despre rigiditatea ta ajung in alte regate."
+    },
+    "choiceC": {
+      "choiceText": "Ii cer o taxa mare",
+      "goldEffect": 6,
+      "respectEffect": -1,
+      "intelligenceEffect": 1,
+      "consequenceText": "Negustorul accepta cu greu taxa, iar vistieria castiga aur din ambitia ta."
     }
-  ]
+  },
+
+  {
+    "eventTitle": "Soldatii cer plata",
+    "description": "Soldatii din garnizoana spun ca nu au fost platiti de doua luni.",
+    "choiceA": {
+      "choiceText": "Le platesc solda",
+      "goldEffect": -5,
+      "respectEffect": 4,
+      "intelligenceEffect": 0,
+      "consequenceText": "Soldatii isi recapata loialitatea si disciplina revine in randurile armatei."
+    },
+    "choiceB": {
+      "choiceText": "Le cer rabdare",
+      "goldEffect": 0,
+      "respectEffect": -2,
+      "intelligenceEffect": 0,
+      "consequenceText": "Nemultumirea mocneste in tabara, iar unii soldati incep sa murmure impotriva tronului."
+    },
+    "choiceC": {
+      "choiceText": "Le promit recompensa mai tarziu",
+      "goldEffect": 0,
+      "respectEffect": 1,
+      "intelligenceEffect": 2,
+      "consequenceText": "Promisiunea ta ii linisteste pentru moment, dar rabdarea lor nu va dura la nesfarsit."
+    }
+  },
+
+  {
+    "eventTitle": "Un spion prins",
+    "description": "Garzile tale au prins un spion dintr-un regat vecin.",
+    "choiceA": {
+      "choiceText": "Il execut",
+      "goldEffect": 0,
+      "respectEffect": 2,
+      "intelligenceEffect": -1,
+      "consequenceText": "Moartea lui transmite un mesaj dur dusmanilor, dar informatiile sale se pierd pentru totdeauna."
+    },
+    "choiceB": {
+      "choiceText": "Il interoghez",
+      "goldEffect": 0,
+      "respectEffect": 1,
+      "intelligenceEffect": 3,
+      "consequenceText": "Sub presiune, spionul dezvaluie cateva planuri ale regatului rival."
+    },
+    "choiceC": {
+      "choiceText": "Il eliberez ca gest diplomatic",
+      "goldEffect": 0,
+      "respectEffect": -1,
+      "intelligenceEffect": 2,
+      "consequenceText": "Gestul tau surprinde curtile vecine si deschide o cale subtire spre diplomatie."
+    }
+  },
+
+  {
+    "eventTitle": "Festival in oras",
+    "description": "Orasul principal doreste sa organizeze un mare festival.",
+    "choiceA": {
+      "choiceText": "Finantez festivalul",
+      "goldEffect": -4,
+      "respectEffect": 4,
+      "intelligenceEffect": 0,
+      "consequenceText": "Oamenii sarbatoresc cu bucurie, iar popularitatea ta creste in randul cetatenilor."
+    },
+    "choiceB": {
+      "choiceText": "Refuz cererea",
+      "goldEffect": 0,
+      "respectEffect": -2,
+      "intelligenceEffect": 0,
+      "consequenceText": "Orasul devine mai posomorat, iar oamenii spun ca imparatul nu iubeste sarbatorile."
+    },
+    "choiceC": {
+      "choiceText": "Las orasul sa plateasca",
+      "goldEffect": 1,
+      "respectEffect": 1,
+      "intelligenceEffect": 2,
+      "consequenceText": "Festivalul are loc fara a goli vistieria imperiala."
+    }
+  },
+
+  {
+    "eventTitle": "Un savant la curte",
+    "description": "Un savant cere finantare pentru studiile sale.",
+    "choiceA": {
+      "choiceText": "Il sprijin",
+      "goldEffect": -3,
+      "respectEffect": 1,
+      "intelligenceEffect": 4,
+      "consequenceText": "Descoperirile sale incep sa aduca idei noi curtii imperiale."
+    },
+    "choiceB": {
+      "choiceText": "Il refuz",
+      "goldEffect": 0,
+      "respectEffect": -1,
+      "intelligenceEffect": -1,
+      "consequenceText": "Savantul pleaca dezamagit si isi cauta norocul in alte regate."
+    },
+    "choiceC": {
+      "choiceText": "Ii cer rezultate rapide",
+      "goldEffect": -1,
+      "respectEffect": 0,
+      "intelligenceEffect": 2,
+      "consequenceText": "Sub presiune, savantul accelereaza cercetarile sale."
+    }
+  },
+
+  {
+    "eventTitle": "Drumul imperial",
+    "description": "Un drum important a fost distrus de ploi.",
+    "choiceA": {
+      "choiceText": "Il repar imediat",
+      "goldEffect": -5,
+      "respectEffect": 3,
+      "intelligenceEffect": 1,
+      "consequenceText": "Drumul este refacut si caravanele incep din nou sa circule."
+    },
+    "choiceB": {
+      "choiceText": "Aman lucrarile",
+      "goldEffect": 0,
+      "respectEffect": -2,
+      "intelligenceEffect": 0,
+      "consequenceText": "Comerciantii sunt nevoiti sa ocoleasca imperiul tau."
+    },
+    "choiceC": {
+      "choiceText": "Cer taxare pentru reparatie",
+      "goldEffect": 3,
+      "respectEffect": -1,
+      "intelligenceEffect": 2,
+      "consequenceText": "Drumul este reparat, dar oamenii murmura despre noile taxe."
+    }
+  },
+
+  {
+    "eventTitle": "Conflict intre nobili",
+    "description": "Doi nobili se cearta pentru pamant.",
+    "choiceA": {
+      "choiceText": "Le impart pamantul",
+      "goldEffect": 0,
+      "respectEffect": 2,
+      "intelligenceEffect": 2,
+      "consequenceText": "Compromisul tau aduce pace temporara intre familiile rivale."
+    },
+    "choiceB": {
+      "choiceText": "Il sustin pe cel mai puternic",
+      "goldEffect": 2,
+      "respectEffect": -2,
+      "intelligenceEffect": 0,
+      "consequenceText": "Decizia ta intareste un aliat, dar creeaza un nou dusman."
+    },
+    "choiceC": {
+      "choiceText": "Le iau pamantul amandurora",
+      "goldEffect": 4,
+      "respectEffect": -3,
+      "intelligenceEffect": 1,
+      "consequenceText": "Terenul intra sub control imperial, dar nobilii sunt indignati."
+    }
+  },
+
+  {
+    "eventTitle": "Atac de banditi",
+    "description": "Caravanele sunt atacate pe drumurile imperiului.",
+    "choiceA": {
+      "choiceText": "Trimit soldati",
+      "goldEffect": -3,
+      "respectEffect": 3,
+      "intelligenceEffect": 1,
+      "consequenceText": "Banditii sunt alungati, iar drumurile devin mai sigure."
+    },
+    "choiceB": {
+      "choiceText": "Ignor problema",
+      "goldEffect": 0,
+      "respectEffect": -4,
+      "intelligenceEffect": 0,
+      "consequenceText": "Comerciantii incep sa evite drumurile imperiului."
+    },
+    "choiceC": {
+      "choiceText": "Pun recompensa pe capetele lor",
+      "goldEffect": -1,
+      "respectEffect": 2,
+      "intelligenceEffect": 2,
+      "consequenceText": "Vanatorii de recompense pornesc in cautarea banditilor."
+    }
+  },
+
+  {
+    "eventTitle": "Furtuna distruge recoltele",
+    "description": "O furtuna puternica a distrus o parte din recoltele imperiului.",
+    "choiceA": {
+      "choiceText": "Ajut satele afectate",
+      "goldEffect": -4,
+      "respectEffect": 4,
+      "intelligenceEffect": 0,
+      "consequenceText": "Ajutorul tau salveaza multe familii de la foamete."
+    },
+    "choiceB": {
+      "choiceText": "Nu intervin",
+      "goldEffect": 0,
+      "respectEffect": -4,
+      "intelligenceEffect": 0,
+      "consequenceText": "Foamea se raspandeste si nemultumirea creste."
+    },
+    "choiceC": {
+      "choiceText": "Imprumut seminte",
+      "goldEffect": -2,
+      "respectEffect": 2,
+      "intelligenceEffect": 3,
+      "consequenceText": "Satele isi pot reface campurile pentru sezonul urmator."
+    }
+  },
+
+  {
+    "eventTitle": "Invitatie la alianta",
+    "description": "Un regat vecin propune o alianta.",
+    "choiceA": {
+      "choiceText": "Accept alianta",
+      "goldEffect": 1,
+      "respectEffect": 2,
+      "intelligenceEffect": 2,
+      "consequenceText": "Relatiile dintre regate se imbunatatesc."
+    },
+    "choiceB": {
+      "choiceText": "Refuz oferta",
+      "goldEffect": 0,
+      "respectEffect": -1,
+      "intelligenceEffect": 0,
+      "consequenceText": "Regatul vecin se simte insultat de refuzul tau."
+    },
+    "choiceC": {
+      "choiceText": "Cer mai multe beneficii",
+      "goldEffect": 3,
+      "respectEffect": -1,
+      "intelligenceEffect": 2,
+      "consequenceText": "Negocierile devin mai tensionate, dar imperiul tau poate castiga mai mult."
+    }
+  },
+
+    {
+      "eventTitle": "Constructia unei biblioteci",
+      "description": "Curtea propune construirea unei biblioteci imperiale.",
+      "choiceA": {
+        "choiceText": "Aprob constructia",
+        "goldEffect": -5,
+        "respectEffect": 2,
+        "intelligenceEffect": 4,
+        "consequenceText": "Biblioteca devine un centru al invataturii."
+      },
+      "choiceB": {
+        "choiceText": "Refuz proiectul",
+        "goldEffect": 0,
+        "respectEffect": -1,
+        "intelligenceEffect": -2,
+        "consequenceText": "Curtea considera decizia ta lipsita de viziune."
+      },
+      "choiceC": {
+        "choiceText": "Construiesc una mica",
+        "goldEffect": -2,
+        "respectEffect": 1,
+        "intelligenceEffect": 2,
+        "consequenceText": "O biblioteca modesta apare in capitala."
+      }
+    },
+
+    {
+      "eventTitle": "Un cavaler isi ofera serviciile",
+      "description": "Un cavaler renumit cere sa intre in slujba ta.",
+      "choiceA": {
+        "choiceText": "Il primesc",
+        "goldEffect": -2,
+        "respectEffect": 3,
+        "intelligenceEffect": 1,
+        "consequenceText": "Prezenta lui aduce prestigiu armatei tale."
+      },
+      "choiceB": {
+        "choiceText": "Il refuz",
+        "goldEffect": 0,
+        "respectEffect": -1,
+        "intelligenceEffect": 0,
+        "consequenceText": "Cavalerul pleaca si isi ofera sabia altui regat."
+      },
+      "choiceC": {
+        "choiceText": "Il pun la incercare",
+        "goldEffect": -1,
+        "respectEffect": 1,
+        "intelligenceEffect": 2,
+        "consequenceText": "Cavalerul trebuie sa dovedeasca loialitatea sa."
+      }
+    },
+
+    {
+      "eventTitle": "Zvonuri de revolta",
+      "description": "Zvonuri despre o revolta circula in provincie.",
+      "choiceA": {
+        "choiceText": "Trimit armata",
+        "goldEffect": -3,
+        "respectEffect": 1,
+        "intelligenceEffect": 1,
+        "consequenceText": "Prezenta armatei descurajeaza revolta."
+      },
+      "choiceB": {
+        "choiceText": "Trimit emisari",
+        "goldEffect": -1,
+        "respectEffect": 2,
+        "intelligenceEffect": 3,
+        "consequenceText": "Discutiile calmeaza tensiunile din provincie."
+      },
+      "choiceC": {
+        "choiceText": "Ignor zvonurile",
+        "goldEffect": 0,
+        "respectEffect": -3,
+        "intelligenceEffect": -1,
+        "consequenceText": "Nemultumirea continua sa creasca in umbra."
+      }
+    },
+
+    {
+      "eventTitle": "Minereu descoperit",
+      "description": "Minerii descopera un nou zacamant de minereu.",
+      "choiceA": {
+        "choiceText": "Investesc in exploatare",
+        "goldEffect": 6,
+        "respectEffect": 1,
+        "intelligenceEffect": 1,
+        "consequenceText": "Minele incep sa produca bogatie pentru imperiu."
+      },
+      "choiceB": {
+        "choiceText": "Las nobilii sa exploateze",
+        "goldEffect": 2,
+        "respectEffect": 0,
+        "intelligenceEffect": 1,
+        "consequenceText": "Nobilii castiga influenta din noua resursa."
+      },
+      "choiceC": {
+        "choiceText": "Protejez zona",
+        "goldEffect": 0,
+        "respectEffect": 2,
+        "intelligenceEffect": 2,
+        "consequenceText": "Zona este pastrata pentru exploatare viitoare."
+      }
+    }
+]
 }
