@@ -99,21 +99,27 @@ public class EventUIController : MonoBehaviour
 
     public void ChooseA()
     {
-        ResolveChoice(currentEvent.choiceA, "Ai ales prima optiune.");
+        ResolveChoice(currentEvent.choiceA);
     }
 
     public void ChooseB()
     {
-        ResolveChoice(currentEvent.choiceB, "Ai ales a doua optiune.");
+        ResolveChoice(currentEvent.choiceB);
     }
 
     public void ChooseC()
     {
-        ResolveChoice(currentEvent.choiceC, "Ai ales a treia optiune.");
+        ResolveChoice(currentEvent.choiceC);
     }
 
-    private void ResolveChoice(ChoiceData choice, string reason)
+    private void ResolveChoice(ChoiceData choice)
     {
+        if (choice == null)
+        {
+            Debug.LogError("Choice is null.");
+            return;
+        }
+
         GameState.Instance.AddGold(choice.goldEffect);
         GameState.Instance.AddRespect(choice.respectEffect);
         GameState.Instance.AddIntelligence(choice.intelligenceEffect);
@@ -128,7 +134,7 @@ public class EventUIController : MonoBehaviour
         pendingIntelligenceEffect = choice.intelligenceEffect;
 
         if (feedbackReasonText != null)
-            feedbackReasonText.text = reason;
+            feedbackReasonText.text = choice.consequenceText;
 
         if (feedbackStatsText != null)
             feedbackStatsText.text = FormatStatEffects(

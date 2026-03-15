@@ -1,41 +1,50 @@
 {
   "events": [
-    
-      {
-        "eventTitle": "Un taran cere ajutor",
-        "description": "Un taran spune ca i-au fost furate granele.",
-        "choiceA": {
-          "choiceText": "Il ajut din rezerve",
-          "goldEffect": -3,
-          "respectEffect": 4,
-          "intelligenceEffect": 0,
-          "setFlag": "helped_peasants"
-        },
-        "choiceB": {
-          "choiceText": "Il ignor",
-          "goldEffect": 0,
-          "respectEffect": -3,
-          "intelligenceEffect": 0
-        }
-
+    {
+      "eventTitle": "Un taran cere ajutor",
+      "description": "Un taran spune ca i-au fost furate granele.",
+      "choiceA": {
+        "choiceText": "Il ajut din rezerve",
+        "goldEffect": -3,
+        "respectEffect": 4,
+        "intelligenceEffect": 0,
+        "setFlag": "helped_peasants",
+        "consequenceText": "Satenii vad in tine un conducator milos, iar vestea bunatatii tale se raspandeste repede."
+      },
+      "choiceB": {
+        "choiceText": "Il ignor",
+        "goldEffect": 0,
+        "respectEffect": -3,
+        "intelligenceEffect": 0,
+        "setFlag": "ignored_peasants",
+        "consequenceText": "Lipsa ta de reactie slabeste increderea satului, iar oamenii incep sa murmure impotriva tronului."
+      },
+      "choiceC": {
+        "choiceText": "Trimit garzile sa caute hotii",
+        "goldEffect": -1,
+        "respectEffect": 2,
+        "intelligenceEffect": 2,
+        "setFlag": "sent_guards_for_peasants",
+        "consequenceText": "Hotararea ta aduce ordine in sat, iar taranii simt ca legea imparatului ii poate proteja."
+      }
     },
     {
       "eventTitle": "Satul iti multumeste",
       "description": "Satenii vin cu daruri pentru ajutorul oferit.",
       "requiredFlag": "helped_peasants",
-
       "choiceA": {
         "choiceText": "Accept darurile",
         "goldEffect": 3,
         "respectEffect": 2,
-        "intelligenceEffect": 0
+        "intelligenceEffect": 0,
+        "consequenceText": "Darurile sporesc vistieria, iar satenii se bucura ca imparatul le-a primit recunostinta."
       },
-
       "choiceB": {
         "choiceText": "Refuz politicos",
         "goldEffect": 0,
         "respectEffect": 3,
-        "intelligenceEffect": 1
+        "intelligenceEffect": 1,
+        "consequenceText": "Refuzul tau smerit iti mareste prestigiul, iar oamenii te vad ca pe un conducator cumpatat."
       }
     },
     {
@@ -45,19 +54,22 @@
         "choiceText": "Scad taxele pentru brutari",
         "goldEffect": -6,
         "intelligenceEffect": 1,
-        "respectEffect": 4
+        "respectEffect": 4,
+        "consequenceText": "Pretul painii scade treptat, iar poporul simte usurare in fata grijii tale."
       },
       "choiceB": {
         "choiceText": "Nu fac nimic",
         "goldEffect": 0,
         "intelligenceEffect": 0,
-        "respectEffect": -4
+        "respectEffect": -4,
+        "consequenceText": "Nemultumirea creste in sat, iar foamea incepe sa se transforme in furie."
       },
       "choiceC": {
         "choiceText": "Rationalizez rezervele",
         "goldEffect": -2,
         "intelligenceEffect": 3,
-        "respectEffect": 1
+        "respectEffect": 1,
+        "consequenceText": "Masura ta tempereaza criza, iar curtea recunoaste prudenta deciziei."
       },
       "minGold": 0,
       "maxGold": 20,

@@ -12,4 +12,6 @@ public class ChoiceData
 
     public string setFlag;
     public string requiredFlag;
+
+    public string consequenceText;
 }

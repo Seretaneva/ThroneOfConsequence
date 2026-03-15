@@ -18,11 +18,11 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
     {
         string systemPrompt =
             "Esti evaluatorul unui joc medieval de strategie. " +
-            "Analizeaza raspunsul jucatorului si returneaza STRICT JSON valid " +
+            "Analizeaza raspunsul jucatorului si returneaza STRICT JSON valid. " +
             "Valorile goldEffect, respectEffect si intelligenceEffect trebuie sa fie intre -10 si 10. " +
-            "Judeca raspunsul dupa compasiune, dreptate, pragmatism, autoritate si intelepciune. " +
-            "Nu adauga text in afara JSON-ului."+
-            "Campul \"reason\" trebuie sa fie EXACT o singura propozitie, maximum 12 cuvinte.";
+            "Campul \"reason\" trebuie sa descrie consecinta politica sau sociala a deciziei regelui, nu sa repete ce a ales jucatorul. " +
+            "Campul \"reason\" trebuie sa fie EXACT o singura propozitie scurta, maximum 12 cuvinte. " +
+            "Nu adauga text in afara JSON-ului.";
 
         string userPrompt =
             $"Event title: {eventTitle}\n" +
@@ -36,14 +36,21 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
             "- Daca raspunsul este lacom sau egoist, creste goldEffect dar scade respectEffect.\n" +
             "- Daca raspunsul este inteligent sau strategic, creste intelligenceEffect.\n" +
             "- Daca raspunsul este crud sau nedrept, scade respectEffect.\n" +
+            "- Campul reason NU trebuie sa repete alegerea jucatorului.\n" +
+            "- Campul reason trebuie sa descrie consecinta deciziei asupra satului, curtii sau reputatiei regelui.\n" +
             "- Campul reason trebuie sa fie O SINGURA PROPOZITIE scurta (max 12 cuvinte).\n\n" +
+
+            "Exemplu bun de reason:\n" +
+            "- \"Satenii se tem de cruzimea ta.\"\n" +
+            "- \"Gestul tau aduce incredere si loialitate.\"\n" +
+            "- \"Hotararea intareste ordinea, dar costa resurse.\"\n\n" +
 
             "Returneaza STRICT JSON valid in acest format:\n" +
             "{\n" +
             "  \"goldEffect\": 0,\n" +
             "  \"respectEffect\": 0,\n" +
             "  \"intelligenceEffect\": 0,\n" +
-            "  \"reason\": \"o singura propozitie scurta\"\n" +
+            "  \"reason\": \"o singura propozitie despre consecinta\"\n" +
             "}";
         
         OllamaChatRequest requestData = new OllamaChatRequest

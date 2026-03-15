@@ -319,7 +319,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557c4a4849151e242a529a4ab97bf219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OllamaEvaluator
-  modelName: gemma3:12b
+  modelName: qwen2.5:7b-instruct
   apiUrl: http://localhost:11434/api/chat
 --- !u!4 &83182430
 Transform:
@@ -3557,17 +3557,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d59a14a641ba93f4089a460461eb5131, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EventUIController
-  eventDescriptionText: {fileID: 600621200}
   eventTitleText: {fileID: 939869596}
+  eventDescriptionText: {fileID: 600621200}
   choiceAText: {fileID: 1097863683}
   choiceBText: {fileID: 1289565173}
   choiceCText: {fileID: 562782466}
   freeTextInput: {fileID: 2137846186}
-  ollamaEvaluator: {fileID: 83182429}
   choicesPanel: {fileID: 2143269509}
   feedbackPanel: {fileID: 4571771}
   feedbackReasonText: {fileID: 167382839}
   feedbackStatsText: {fileID: 287776973}
+  ollamaEvaluator: {fileID: 83182429}
 --- !u!4 &2021963025
 Transform:
   m_ObjectHideFlags: 0
