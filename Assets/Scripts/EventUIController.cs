@@ -124,29 +124,7 @@ public class EventUIController : MonoBehaviour
 
         lastResolvedChoice = choice;
 
-        // Stats vizibile
-        GameState.Instance.AddGold(choice.effects.gold);
-        GameState.Instance.AddRespect(choice.effects.respect);
-        GameState.Instance.AddIntelligence(choice.effects.intelligence);
-
-        // Flags
-        if (choice.setFlags != null)
-        {
-            foreach (string flag in choice.setFlags)
-            {
-                if (!string.IsNullOrWhiteSpace(flag))
-                    GameFlags.SetFlag(flag);
-            }
-        }
-
-        if (choice.removeFlags != null)
-        {
-            foreach (string flag in choice.removeFlags)
-            {
-                if (!string.IsNullOrWhiteSpace(flag))
-                    GameFlags.RemoveFlag(flag);
-            }
-        }
+        ChoiceProcessor.ApplyChoice(choice);
 
         pendingGoldEffect = choice.effects.gold;
         pendingRespectEffect = choice.effects.respect;
