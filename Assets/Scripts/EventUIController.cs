@@ -28,6 +28,7 @@ public class EventUIController : MonoBehaviour
 
     private RuleBasedEvaluator ruleBasedEvaluator = new RuleBasedEvaluator();
     private EventData currentEvent;
+    private ChoiceData lastResolvedChoice;
 
     private int pendingGoldEffect;
     private int pendingRespectEffect;
@@ -56,17 +57,18 @@ public class EventUIController : MonoBehaviour
             eventDescriptionText.text = currentEvent.description;
 
         if (choiceAText != null)
-            choiceAText.text = currentEvent.choiceA.choiceText;
+            choiceAText.text = currentEvent.choiceA != null ? currentEvent.choiceA.choiceText : "";
 
         if (choiceBText != null)
-            choiceBText.text = currentEvent.choiceB.choiceText;
+            choiceBText.text = currentEvent.choiceB != null ? currentEvent.choiceB.choiceText : "";
 
         if (choiceCText != null)
-            choiceCText.text = currentEvent.choiceC.choiceText;
+            choiceCText.text = currentEvent.choiceC != null ? currentEvent.choiceC.choiceText : "";
 
         if (freeTextInput != null)
             freeTextInput.text = "";
 
+        lastResolvedChoice = null;
         ClearFeedback();
     }
 
@@ -120,28 +122,47 @@ public class EventUIController : MonoBehaviour
             return;
         }
 
-        GameState.Instance.AddGold(choice.goldEffect);
-        GameState.Instance.AddRespect(choice.respectEffect);
-        GameState.Instance.AddIntelligence(choice.intelligenceEffect);
+        lastResolvedChoice = choice;
 
-        if (!string.IsNullOrEmpty(choice.setFlag))
+        // Stats vizibile
+        GameState.Instance.AddGold(choice.effects.gold);
+        GameState.Instance.AddRespect(choice.effects.respect);
+        GameState.Instance.AddIntelligence(choice.effects.intelligence);
+
+        // Flags
+        if (choice.setFlags != null)
         {
-            GameFlags.SetFlag(choice.setFlag);
+            foreach (string flag in choice.setFlags)
+            {
+                if (!string.IsNullOrWhiteSpace(flag))
+                    GameFlags.SetFlag(flag);
+            }
         }
 
-        pendingGoldEffect = choice.goldEffect;
-        pendingRespectEffect = choice.respectEffect;
-        pendingIntelligenceEffect = choice.intelligenceEffect;
+        if (choice.removeFlags != null)
+        {
+            foreach (string flag in choice.removeFlags)
+            {
+                if (!string.IsNullOrWhiteSpace(flag))
+                    GameFlags.RemoveFlag(flag);
+            }
+        }
+
+        pendingGoldEffect = choice.effects.gold;
+        pendingRespectEffect = choice.effects.respect;
+        pendingIntelligenceEffect = choice.effects.intelligence;
 
         if (feedbackReasonText != null)
             feedbackReasonText.text = choice.consequenceText;
 
         if (feedbackStatsText != null)
+        {
             feedbackStatsText.text = FormatStatEffects(
                 pendingGoldEffect,
                 pendingRespectEffect,
                 pendingIntelligenceEffect
             );
+        }
 
         ShowFeedbackPanel();
     }
@@ -224,21 +245,28 @@ public class EventUIController : MonoBehaviour
             feedbackReasonText.text = result.reason;
 
         if (feedbackStatsText != null)
+        {
             feedbackStatsText.text = FormatStatEffects(
                 pendingGoldEffect,
                 pendingRespectEffect,
                 pendingIntelligenceEffect
             );
+        }
 
         if (freeTextInput != null)
             freeTextInput.text = "";
 
+        lastResolvedChoice = null;
         ShowFeedbackPanel();
     }
 
     public void ContinueToNextEvent()
     {
-        EventManager.Instance.PickRandomEvent();
+        if (lastResolvedChoice != null)
+            EventManager.Instance.PickNextEventFromChoice(lastResolvedChoice);
+        else
+            EventManager.Instance.PickRandomEvent();
+
         LoadCurrentEvent();
         ShowChoicesPanel();
     }
