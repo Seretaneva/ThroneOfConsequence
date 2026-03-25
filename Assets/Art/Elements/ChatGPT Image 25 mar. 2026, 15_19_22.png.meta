@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: 08d97c0bfb7bf974d99b817cb9686d6f
+guid: 2f82e0a64c9065d43b2ca34be253560b
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8223760342256937110
-    second: room_0
+      213: -4160619601289710574
+    second: ChatGPT Image 25 mar. 2026, 15_19_22_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,10 +48,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: room_0
+      name: ChatGPT Image 25 mar. 2026, 15_19_22_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1536
-        height: 1024
+        x: 171
+        y: 57
+        width: 678
+        height: 795
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6986b2eb57aa02270800000000000000
-      internalID: 8223760342256937110
+      spriteID: 214799b34828246c0800000000000000
+      internalID: -4160619601289710574
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 4e248a64f5c9a4541a9f64d5747a9b2d
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -159,11 +159,9 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      room_0: 8223760342256937110
+      ChatGPT Image 25 mar. 2026, 15_19_22_0: -4160619601289710574
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

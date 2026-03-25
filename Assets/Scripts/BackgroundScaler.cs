@@ -1,27 +1,42 @@
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[ExecuteAlways]
 public class BackgroundScaler : MonoBehaviour
 {
-  void Update()
-{
-    ScaleBackground();
-}
+    void Start()
+    {
+        ScaleBackground();
+    }
+
+    void Update()
+    {
+        ScaleBackground();
+    }
+
     void ScaleBackground()
     {
+        Camera cam = Camera.main;
+
+        if (cam == null)
+            return;
+
         SpriteRenderer sr = GetComponent<SpriteRenderer>();
 
-        float worldScreenHeight = Camera.main.orthographicSize * 2f;
-        float worldScreenWidth = worldScreenHeight * Screen.width / Screen.height;
+        if (sr == null)
+            return;
+
+        float screenHeight = cam.orthographicSize * 2f;
+        float screenWidth = screenHeight * cam.aspect;
 
         Vector2 spriteSize = sr.sprite.bounds.size;
 
-        float scaleX = worldScreenWidth / spriteSize.x;
-        float scaleY = worldScreenHeight / spriteSize.y;
+        float scaleX = screenWidth / spriteSize.x;
+        float scaleY = screenHeight / spriteSize.y;
 
-        // Alegem valoarea mai mare ca sa acopere tot ecranul
         float scale = Mathf.Max(scaleX, scaleY);
 
         transform.localScale = new Vector3(scale, scale, 1f);
+
+        transform.position = new Vector3(0, 0, 0);
     }
 }

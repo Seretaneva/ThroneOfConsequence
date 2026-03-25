@@ -1537,6 +1537,118 @@
         "consequenceText": "Satele te privesc cu alti ochi, chiar daca vistieria ofteaza."
       }
     },
+      {
+    "id": "political_conspiracy_01",
+    "eventTitle": "Conspirație în Curte",
+    "description": "Există zvonuri că un grup de nobili complotează împotriva ta. Unul dintre consilierii tăi îți aduce dovezi ale unei conspirații care vizează tronul.",
+    "minGold": 0,
+    "maxGold": 9999,
+    "minRespect": 0,
+    "maxRespect": 9999,
+    "minIntelligence": 0,
+    "maxIntelligence": 9999,
+    "tags": ["conspiracy", "court", "nobles"],
+    "requiredFlag": "",
+    "requiredFlags": [],
+    "blockedFlags": ["political_story_resolved"],
+    "storyline": "political",
+    "storyStage": 1,
+    "minRank": 0,
+    "maxRank": 9999,
+    "weight": 5,
+    "priority": 0,
+    "unique": true,
+    "choiceA": {
+      "choiceText": "Începe o anchetă publică și arestează nobilii implicați.",
+      "effects": {
+        "gold": -4,
+        "intelligence": 0,
+        "respect": -2
+      },
+      "personalityEffects": {
+        "cruelty": 1,
+        "justice": 0,
+        "mercy": -2,
+        "greed": 0,
+        "authority": 2,
+        "wisdom": 0
+      },
+      "factionEffects": {
+        "peasants": 2,
+        "nobles": -4,
+        "merchants": 0,
+        "army": 1,
+        "clergy": 0,
+        "scholars": 0
+      },
+      "setFlags": ["political_investigation_opened"],
+      "removeFlags": [],
+      "nextEventIds": ["political_conspiracy_02"],
+      "unlockBuildings": [],
+      "leadershipTags": ["authoritarian"],
+      "consequenceText": "Instabilitatea crește, dar ai demonstrat că nu tolerezi trădarea."
+    },
+    "choiceB": {
+      "choiceText": "Dă o amnistie publică pentru toți nobilii implicați și promite schimbări legale.",
+      "effects": {
+        "gold": -2,
+        "intelligence": 0,
+        "respect": 2
+      },
+      "personalityEffects": {
+        "cruelty": 0,
+        "justice": 2,
+        "mercy": 1,
+        "greed": -1,
+        "authority": 1,
+        "wisdom": 1
+      },
+      "factionEffects": {
+        "peasants": 0,
+        "nobles": 2,
+        "merchants": 0,
+        "army": 0,
+        "clergy": 0,
+        "scholars": 1
+      },
+      "setFlags": ["political_reconciliation"],
+      "removeFlags": [],
+      "nextEventIds": ["political_conspiracy_03"],
+      "unlockBuildings": [],
+      "leadershipTags": ["benevolent"],
+      "consequenceText": "Oamenii îți apreciază înțelepciunea, dar unii nobili rămân nesiguri de intențiile tale."
+    },
+    "choiceC": {
+      "choiceText": "Dăruiește-le un teren vast celor mai loiali nobili.",
+      "effects": {
+        "gold": -3,
+        "intelligence": 0,
+        "respect": 3
+      },
+      "personalityEffects": {
+        "cruelty": 0,
+        "justice": 1,
+        "mercy": 0,
+        "greed": 1,
+        "authority": 2,
+        "wisdom": 0
+      },
+      "factionEffects": {
+        "peasants": -1,
+        "nobles": 4,
+        "merchants": 0,
+        "army": 0,
+        "clergy": 0,
+        "scholars": 0
+      },
+      "setFlags": ["political_noble_reward"],
+      "removeFlags": [],
+      "nextEventIds": ["political_conspiracy_04"],
+      "unlockBuildings": [],
+      "leadershipTags": ["patronage"],
+      "consequenceText": "Nobilii sunt recunoscători, dar aceștia devin tot mai influenți și mai puternici."
+    }
+},
     {
       "id": "court_artist_01",
       "eventTitle": "Un artist cere patronaj",
@@ -1727,70 +1839,6 @@
         "unlockBuildings": ["granary"],
         "leadershipTags": ["burden_sharing"],
         "consequenceText": "Hambarele vor fi ridicate, dar nu fara cateva priviri reci din partea caselor mari."
-      }
-    },
-    {
-      "id": "palace_01",
-      "eventTitle": "O aripa noua pentru palat",
-      "description": "Arhitectul curtii spune ca palatul tau poate fi extins, facandu-l demn de un rang mai inalt.",
-      "minGold": 0,
-      "maxGold": 9999,
-      "minRespect": 0,
-      "maxRespect": 9999,
-      "minIntelligence": 0,
-      "maxIntelligence": 9999,
-      "tags": ["palace", "prestige", "building"],
-      "requiredFlag": "",
-      "requiredFlags": [],
-      "blockedFlags": ["palace_story_resolved"],
-      "storyline": "palace",
-      "storyStage": 1,
-      "minRank": 0,
-      "maxRank": 9999,
-      "weight": 3,
-      "priority": 0,
-      "unique": true,
-      "choiceA": {
-        "choiceText": "Extind palatul.",
-        "effects": { "gold": -6, "intelligence": 1, "respect": 4 },
-        "personalityEffects": { "cruelty": 0, "justice": 0, "mercy": 0, "greed": 0, "authority": 2, "wisdom": 0 },
-        "factionEffects": { "peasants": 0, "nobles": 2, "merchants": 1, "army": 0, "clergy": 0, "scholars": 0 },
-        "requiredFlags": [],
-        "blockedFlags": [],
-        "setFlags": ["palace_expanded", "palace_story_resolved"],
-        "removeFlags": [],
-        "nextEventIds": [],
-        "unlockBuildings": ["palace_wing"],
-        "leadershipTags": ["majestic"],
-        "consequenceText": "Palatul tau incepe sa arate ca locul de unde chiar se nasc dinastii."
-      },
-      "choiceB": {
-        "choiceText": "Pastrez palatul modest.",
-        "effects": { "gold": 0, "intelligence": 0, "respect": 0 },
-        "personalityEffects": { "cruelty": 0, "justice": 0, "mercy": 0, "greed": 0, "authority": 0, "wisdom": 1 },
-        "factionEffects": { "peasants": 0, "nobles": -1, "merchants": 0, "army": 0, "clergy": 0, "scholars": 0 },
-        "requiredFlags": [],
-        "blockedFlags": [],
-        "setFlags": ["palace_modest", "palace_story_resolved"],
-        "removeFlags": [],
-        "nextEventIds": [],
-        "unlockBuildings": [],
-        "leadershipTags": ["simple"],
-        "consequenceText": "Nu impresionezi pe nimeni, dar nici nu pari un stapan beat de lux."
-      },
-      "choiceC": {
-        "choiceText": "Decorez doar sala tronului.",
-        "effects": { "gold": -3, "intelligence": 0, "respect": 2 },
-        "personalityEffects": { "cruelty": 0, "justice": 0, "mercy": 0, "greed": 0, "authority": 1, "wisdom": 0 },
-        "factionEffects": { "peasants": 0, "nobles": 1, "merchants": 1, "army": 0, "clergy": 0, "scholars": 0 },
-        "requiredFlags": [],
-        "blockedFlags": [],
-        "setFlags": ["throne_room_decorated", "palace_story_resolved"],
-        "removeFlags": [],
-        "nextEventIds": [],
-        "unlockBuildings": ["throne_decor"],
-        "leadershipTags": ["symbolic"],
-        "consequenceText": "Nu schimbi tot palatul, dar schimbi exact incaperea unde puterea se vede cel mai bine."
       }
     },
     {

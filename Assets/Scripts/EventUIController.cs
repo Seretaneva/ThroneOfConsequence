@@ -26,6 +26,8 @@ public class EventUIController : MonoBehaviour
     [Header("Evaluators")]
     [SerializeField] private OllamaEvaluator ollamaEvaluator;
 
+    [SerializeField] private AudienceSequenceController audienceSequenceController;
+
     private RuleBasedEvaluator ruleBasedEvaluator = new RuleBasedEvaluator();
     private EventData currentEvent;
     private ChoiceData lastResolvedChoice;
@@ -36,8 +38,9 @@ public class EventUIController : MonoBehaviour
 
     private void Start()
     {
-        LoadCurrentEvent();
-        ShowChoicesPanel();
+        // LoadCurrentEvent();
+        // ShowChoicesPanel();
+         HideEventUI();
     }
 
     private void LoadCurrentEvent()
@@ -238,6 +241,8 @@ public class EventUIController : MonoBehaviour
         ShowFeedbackPanel();
     }
 
+   
+
     public void ContinueToNextEvent()
     {
         if (lastResolvedChoice != null)
@@ -245,8 +250,8 @@ public class EventUIController : MonoBehaviour
         else
             EventManager.Instance.PickRandomEvent();
 
-        LoadCurrentEvent();
-        ShowChoicesPanel();
+        if (audienceSequenceController != null)
+            audienceSequenceController.StartNextEventSequence();
     }
 
     private string FormatStatEffects(int gold, int respect, int intelligence)
@@ -256,5 +261,65 @@ public class EventUIController : MonoBehaviour
         string intelligenceText = intelligence >= 0 ? $"+{intelligence}" : intelligence.ToString();
 
         return $"Gold {goldText} | Respect {respectText} | Intelligence {intelligenceText}";
+    }
+
+   public void HideEventUI()
+    {
+        if (eventTitleText != null)
+            eventTitleText.text = "";
+
+        if (eventDescriptionText != null)
+            eventDescriptionText.text = "";
+
+        if (choiceAText != null)
+            choiceAText.text = "";
+
+        if (choiceBText != null)
+            choiceBText.text = "";
+
+        if (choiceCText != null)
+            choiceCText.text = "";
+
+        if (freeTextInput != null)
+            freeTextInput.text = "";
+
+        if (choicesPanel != null)
+            choicesPanel.SetActive(false);
+
+        if (feedbackPanel != null)
+            feedbackPanel.SetActive(false);
+    }
+
+    public void ShowEvent(EventData eventData)
+    {
+        currentEvent = eventData;
+
+        if (currentEvent == null)
+        {
+            Debug.LogError("No current event found.");
+            return;
+        }
+
+        if (eventTitleText != null)
+            eventTitleText.text = currentEvent.eventTitle;
+
+        if (eventDescriptionText != null)
+            eventDescriptionText.text = currentEvent.description;
+
+        if (choiceAText != null)
+            choiceAText.text = currentEvent.choiceA != null ? currentEvent.choiceA.choiceText : "";
+
+        if (choiceBText != null)
+            choiceBText.text = currentEvent.choiceB != null ? currentEvent.choiceB.choiceText : "";
+
+        if (choiceCText != null)
+            choiceCText.text = currentEvent.choiceC != null ? currentEvent.choiceC.choiceText : "";
+
+        if (freeTextInput != null)
+            freeTextInput.text = "";
+
+        lastResolvedChoice = null;
+        ClearFeedback();
+        ShowChoicesPanel();
     }
 }

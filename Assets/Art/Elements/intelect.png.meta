@@ -1,10 +1,16 @@
 fileFormatVersion: 2
-guid: 08d97c0bfb7bf974d99b817cb9686d6f
+guid: 89f506e78e7cfaa42a7daacac491fe61
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 8223760342256937110
-    second: room_0
+      213: 6044494760383030750
+    second: intelect_0
+  - first:
+      213: 3768483021418187703
+    second: intelect_1
+  - first:
+      213: -7112480526966491353
+    second: intelect_2
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -48,10 +54,10 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 16
+  spritePixelsToUnits: 100
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,23 +132,67 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: room_0
+      name: intelect_0
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 1536
-        height: 1024
+        x: 61
+        y: 72
+        width: 889
+        height: 913
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 6986b2eb57aa02270800000000000000
-      internalID: 8223760342256937110
+      spriteID: ed5275f95fb52e350800000000000000
+      internalID: 6044494760383030750
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: intelect_1
+      rect:
+        serializedVersion: 2
+        x: 91
+        y: 663
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bbc8b977575c4430800000000000000
+      internalID: 3768483021418187703
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: intelect_2
+      rect:
+        serializedVersion: 2
+        x: 94
+        y: 624
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 727774ee4a46b4d90800000000000000
+      internalID: -7112480526966491353
       vertices: []
       indices: 
       edges: []
@@ -151,7 +201,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 4e248a64f5c9a4541a9f64d5747a9b2d
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -159,11 +209,11 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     spriteCustomMetadata:
-      entries:
-      - key: SpriteEditor.SliceSettings
-        value: '{"sliceOnImport":false,"gridCellCount":{"x":1.0,"y":1.0},"gridSpriteSize":{"x":64.0,"y":64.0},"gridSpriteOffset":{"x":0.0,"y":0.0},"gridSpritePadding":{"x":0.0,"y":0.0},"pivot":{"x":0.5,"y":0.5},"pivotPixels":{"x":0.0,"y":0.0},"autoSlicingMethod":0,"spriteAlignment":0,"pivotUnitMode":0,"slicingType":0,"keepEmptyRects":false,"isAlternate":false}'
+      entries: []
     nameFileIdTable:
-      room_0: 8223760342256937110
+      intelect_0: 6044494760383030750
+      intelect_1: 3768483021418187703
+      intelect_2: -7112480526966491353
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
