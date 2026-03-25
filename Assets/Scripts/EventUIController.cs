@@ -260,7 +260,7 @@ public class EventUIController : MonoBehaviour
         string respectText = respect >= 0 ? $"+{respect}" : respect.ToString();
         string intelligenceText = intelligence >= 0 ? $"+{intelligence}" : intelligence.ToString();
 
-        return $"{goldText} | {respectText} | {intelligenceText}";
+        return $"Gold: {goldText} |Respect: {respectText} |Intelligence:  {intelligenceText}";
     }
    public void HideEventUI()
     {
