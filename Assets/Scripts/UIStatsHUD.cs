@@ -21,8 +21,8 @@ public class UIStatsHUD : MonoBehaviour
 
     private void UpdateUI()
     {
-        goldText.text = "Gold: " + GameState.Instance.Gold;
-        respectText.text = "Respect: " + GameState.Instance.Respect;
-        intelligenceText.text = "Intelect: " + GameState.Instance.Intelligence;
+        goldText.text = ": " + GameState.Instance.Gold;
+        respectText.text = ": " + GameState.Instance.Respect;
+        intelligenceText.text = ": " + GameState.Instance.Intelligence;
     }
 }
