@@ -2,29 +2,38 @@ using UnityEngine;
 
 public class PeasantMover : MonoBehaviour
 {
+    public Transform stopPoint;
     public float speed = 2f;
-    private Vector3 target;
-    private bool move = false;
 
-    public void MoveTo(Vector3 pos)
+    private Animator anim;
+    private bool isMoving = true;
+
+    void Start()
     {
-        target = pos;
-        move = true;
+        anim = GetComponent<Animator>();
+        anim.SetBool("isWalking", true);
     }
 
     void Update()
     {
-        if (!move) return;
-
-        transform.position = Vector3.MoveTowards(
-            transform.position,
-            target,
-            speed * Time.deltaTime
-        );
-
-        if (Vector3.Distance(transform.position, target) < 0.05f)
+        if (isMoving)
         {
-            move = false;
+            transform.position = Vector3.MoveTowards(
+                transform.position,
+                stopPoint.position,
+                speed * Time.deltaTime
+            );
+
+            float distance = Vector3.Distance(
+                transform.position,
+                stopPoint.position
+            );
+
+            if (distance < 0.1f)
+            {
+                isMoving = false;
+                anim.SetBool("isWalking", false);
+            }
         }
     }
 }
