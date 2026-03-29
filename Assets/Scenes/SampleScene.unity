@@ -2010,6 +2010,33 @@ MonoBehaviour:
   m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.RectMask2D
   m_Padding: {x: -8, y: -5, z: -8, w: -5}
   m_Softness: {x: 0, y: 0}
+--- !u!1 &692060514 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 212260321933606393, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+  m_PrefabInstance: {fileID: 7573845328461834461}
+  m_PrefabAsset: {fileID: 0}
+--- !u!95 &692060518
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 692060514}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 357caa3119fac7d438915d80e4c0819f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &760037652
 GameObject:
   m_ObjectHideFlags: 0
@@ -5073,17 +5100,29 @@ PrefabInstance:
       propertyPath: m_Name
       value: Peasant
       objectReference: {fileID: 0}
+    - target: {fileID: 212260321933606393, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 415418521900266537, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+      propertyPath: stopPoint
+      value: 
+      objectReference: {fileID: 1969193920}
     - target: {fileID: 6110733748413696883, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
       propertyPath: m_LocalScale.x
-      value: 0.863709
+      value: 0.64235604
+      objectReference: {fileID: 0}
+    - target: {fileID: 6110733748413696883, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.58804005
       objectReference: {fileID: 0}
     - target: {fileID: 6110733748413696883, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0.1948
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6110733748413696883, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.72
+      value: -0.94
       objectReference: {fileID: 0}
     - target: {fileID: 6110733748413696883, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
       propertyPath: m_LocalPosition.z
@@ -5120,7 +5159,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 212260321933606393, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 692060518}
   m_SourcePrefab: {fileID: 100100000, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

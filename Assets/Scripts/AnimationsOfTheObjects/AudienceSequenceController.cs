@@ -9,7 +9,7 @@ public class AudienceSequenceController : MonoBehaviour
     [SerializeField] private GameObject doorOpen;
 
     [Header("NPC")]
-    [SerializeField] private GameObject peasantPrefab;
+    [SerializeField] private GameObject peasantObject; 
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform stopPoint;
     [SerializeField] private float moveSpeed = 2f;
@@ -23,12 +23,33 @@ public class AudienceSequenceController : MonoBehaviour
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip knockClip;
 
-    private GameObject currentNpc;
     private bool canClickDoor = false;
     private bool sequenceRunning = false;
+    private Animator peasantAnim;
 
     private IEnumerator Start()
     {
+        if (peasantObject != null)
+        {
+            peasantObject.SetActive(false);
+            peasantObject.transform.position = spawnPoint.position;
+        }
+
+        if (peasantObject != null)
+        {
+            peasantObject.SetActive(false);
+            peasantAnim = peasantObject.GetComponent<Animator>();
+        }
+
+        if (eventUIController != null)
+            eventUIController.HideEventUI();
+
+        if (portraitImage != null)
+            portraitImage.gameObject.SetActive(false);
+
+        if (doorClosed != null) doorClosed.SetActive(true);
+        if (doorOpen != null) doorOpen.SetActive(false);
+
         yield return null;
 
         while (EventManager.Instance == null || EventManager.Instance.GetCurrentEvent() == null)
@@ -38,22 +59,22 @@ public class AudienceSequenceController : MonoBehaviour
     }
 
     private void PrepareForVisitor()
-    {   
-        Debug.Log("PrepareForVisitor a fost apelat");
+    {
+        Debug.Log("PrepareForVisitor apelat");
         sequenceRunning = false;
         canClickDoor = true;
-        
-    
+
         if (eventUIController != null)
             eventUIController.HideEventUI();
 
         if (portraitImage != null)
             portraitImage.gameObject.SetActive(false);
 
-        if (currentNpc != null)
+    
+        if (peasantObject != null)
         {
-            Destroy(currentNpc);
-            currentNpc = null;
+            peasantObject.SetActive(false);
+            peasantObject.transform.position = spawnPoint.position;
         }
 
         if (doorClosed != null) doorClosed.SetActive(true);
@@ -65,11 +86,11 @@ public class AudienceSequenceController : MonoBehaviour
 
     public void OnDoorClicked()
     {
-        Debug.Log("OnDoorClicked a fost apelat");
+        Debug.Log($"OnDoorClicked apelat | canClickDoor={canClickDoor} | sequenceRunning={sequenceRunning}");
 
         if (!canClickDoor || sequenceRunning)
         {
-            Debug.LogWarning($"Nu pot porni secventa. canClickDoor={canClickDoor}, sequenceRunning={sequenceRunning}");
+            Debug.LogWarning("Click blocat");
             return;
         }
 
@@ -84,50 +105,52 @@ public class AudienceSequenceController : MonoBehaviour
     private IEnumerator PlayCurrentEventSequence()
     {
         EventData currentEvent = EventManager.Instance.GetCurrentEvent();
-
-        if (currentEvent == null)
-        {
-            Debug.LogError("No current event in sequence.");
-            yield break;
-        }
-
-        if (peasantPrefab == null || spawnPoint == null || stopPoint == null)
-        {
-            Debug.LogError("PeasantPrefab / spawnPoint / stopPoint lipsesc din Inspector.");
-            yield break;
-        }
+        if (currentEvent == null) { Debug.LogError("No current event."); yield break; }
 
         sequenceRunning = true;
         canClickDoor = false;
 
-        if (eventUIController != null)
-            eventUIController.HideEventUI();
+        if (eventUIController != null) eventUIController.HideEventUI();
+        if (portraitImage != null) portraitImage.gameObject.SetActive(false);
 
-        if (portraitImage != null)
-            portraitImage.gameObject.SetActive(false);
-
+        // ✅ Deschide usa
         if (doorClosed != null) doorClosed.SetActive(false);
         if (doorOpen != null) doorOpen.SetActive(true);
 
-        yield return new WaitForSeconds(0.15f);
+        yield return new WaitForSeconds(0.3f);
 
-        currentNpc = Instantiate(peasantPrefab, spawnPoint.position, Quaternion.identity);
-
-        while (Vector3.Distance(currentNpc.transform.position, stopPoint.position) > 0.05f)
+       
+        if (peasantObject != null)
         {
-            currentNpc.transform.position = Vector3.MoveTowards(
-                currentNpc.transform.position,
+            peasantObject.transform.position = spawnPoint.position;
+            peasantObject.SetActive(true);
+
+            if (peasantAnim != null)
+                peasantAnim.SetBool("isWalking", true);
+        }
+
+      
+        while (peasantObject != null &&
+               Vector3.Distance(peasantObject.transform.position, stopPoint.position) > 0.05f)
+        {
+            peasantObject.transform.position = Vector3.MoveTowards(
+                peasantObject.transform.position,
                 stopPoint.position,
                 moveSpeed * Time.deltaTime
             );
-
             yield return null;
         }
 
-        currentNpc.transform.position = stopPoint.position;
+        if (peasantObject != null)
+        {
+            peasantObject.transform.position = stopPoint.position;
+            if (peasantAnim != null)
+                peasantAnim.SetBool("isWalking", false);
+        }
 
         yield return new WaitForSeconds(0.2f);
 
+        // ✅ Arată portretul și UI-ul
         if (portraitImage != null && peasantPortrait != null)
         {
             portraitImage.sprite = peasantPortrait;

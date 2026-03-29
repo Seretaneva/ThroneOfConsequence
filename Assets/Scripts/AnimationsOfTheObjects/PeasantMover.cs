@@ -1,39 +1,42 @@
 using UnityEngine;
+using System;
 
 public class PeasantMover : MonoBehaviour
 {
     public Transform stopPoint;
     public float speed = 2f;
+    public Action onReachedTarget;
 
     private Animator anim;
-    private bool isMoving = true;
+    private bool isMoving = false; 
 
     void Start()
     {
         anim = GetComponent<Animator>();
-        anim.SetBool("isWalking", true);
+        anim.SetBool("isWalking", false); 
+    }
+
+    public void StartMoving() 
+    {
+        isMoving = true;
+        if (anim != null) anim.SetBool("isWalking", true);
     }
 
     void Update()
     {
-        if (isMoving)
+        if (!isMoving) return;
+
+        transform.position = Vector3.MoveTowards(
+            transform.position,
+            stopPoint.position,
+            speed * Time.deltaTime
+        );
+
+        if (Vector3.Distance(transform.position, stopPoint.position) < 0.1f)
         {
-            transform.position = Vector3.MoveTowards(
-                transform.position,
-                stopPoint.position,
-                speed * Time.deltaTime
-            );
-
-            float distance = Vector3.Distance(
-                transform.position,
-                stopPoint.position
-            );
-
-            if (distance < 0.1f)
-            {
-                isMoving = false;
-                anim.SetBool("isWalking", false);
-            }
+            isMoving = false;
+            if (anim != null) anim.SetBool("isWalking", false);
+            onReachedTarget?.Invoke();
         }
     }
 }
