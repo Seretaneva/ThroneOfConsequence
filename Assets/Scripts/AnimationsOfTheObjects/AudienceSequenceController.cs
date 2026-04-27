@@ -59,10 +59,16 @@ public class AudienceSequenceController : MonoBehaviour
     }
 
     private void PrepareForVisitor()
+{
+    StartCoroutine(PrepareForVisitorRoutine());
+}
+
+private IEnumerator PrepareForVisitorRoutine()
     {
-        Debug.Log("PrepareForVisitor apelat");
+        Debug.Log("PrepareForVisitorRoutine apelat");
+
         sequenceRunning = false;
-        canClickDoor = true;
+        canClickDoor = false;
 
         if (eventUIController != null)
             eventUIController.HideEventUI();
@@ -70,7 +76,6 @@ public class AudienceSequenceController : MonoBehaviour
         if (portraitImage != null)
             portraitImage.gameObject.SetActive(false);
 
-    
         if (peasantObject != null)
         {
             peasantObject.SetActive(false);
@@ -80,10 +85,28 @@ public class AudienceSequenceController : MonoBehaviour
         if (doorClosed != null) doorClosed.SetActive(true);
         if (doorOpen != null) doorOpen.SetActive(false);
 
+        float delay = GetKnockDelay();
+
+        yield return new WaitForSeconds(delay);
+
         if (audioSource != null && knockClip != null)
             audioSource.PlayOneShot(knockClip);
+
+        canClickDoor = true;
     }
 
+    private float GetKnockDelay()
+    {
+        int totalStats =
+            GameState.Instance.Gold +
+            GameState.Instance.Respect +
+            GameState.Instance.Intelligence;
+
+        if (totalStats < 60)
+            return Random.Range(6f, 7f);
+
+        return Random.Range(3f, 4f);
+    }
     public void OnDoorClicked()
     {
         Debug.Log($"OnDoorClicked apelat | canClickDoor={canClickDoor} | sequenceRunning={sequenceRunning}");
@@ -97,7 +120,7 @@ public class AudienceSequenceController : MonoBehaviour
         StartCoroutine(PlayCurrentEventSequence());
     }
 
-    public void StartNextEventSequence()
+    public void FinishCurrentAudienceAndWaitForKnock()
     {
         PrepareForVisitor();
     }

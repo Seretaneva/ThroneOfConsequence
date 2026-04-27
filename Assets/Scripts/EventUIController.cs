@@ -250,8 +250,10 @@ public class EventUIController : MonoBehaviour
         else
             EventManager.Instance.PickRandomEvent();
 
+        HideEventUI();
+
         if (audienceSequenceController != null)
-            audienceSequenceController.StartNextEventSequence();
+            audienceSequenceController.FinishCurrentAudienceAndWaitForKnock();
     }
 
     private string FormatStatEffects(int gold, int respect, int intelligence)
