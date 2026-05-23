@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EventUIController : MonoBehaviour
 {
@@ -35,9 +36,12 @@ public class EventUIController : MonoBehaviour
     private int pendingGoldEffect;
     private int pendingRespectEffect;
     private int pendingIntelligenceEffect;
+    private string defaultFreeTextPlaceholder;
 
     private void Start()
     {
+        CacheDefaultFreeTextPlaceholder();
+        ApplyMedievalButtonStyle();
         HideEventUI();
     }
 
@@ -69,6 +73,38 @@ public class EventUIController : MonoBehaviour
 
         if (feedbackStatsText != null)
             feedbackStatsText.text = "";
+    }
+
+    private void CacheDefaultFreeTextPlaceholder()
+    {
+        if (freeTextInput != null && freeTextInput.placeholder is TMP_Text placeholderText)
+            defaultFreeTextPlaceholder = placeholderText.text;
+    }
+
+    private void SetFreeTextPlaceholder(string text)
+    {
+        if (text != null && freeTextInput != null && freeTextInput.placeholder is TMP_Text placeholderText)
+            placeholderText.text = text;
+    }
+
+    private void ApplyMedievalButtonStyle()
+    {
+        AddMedievalStyleToButtons(choicesPanel);
+        AddMedievalStyleToButtons(feedbackPanel);
+    }
+
+    private void AddMedievalStyleToButtons(GameObject panel)
+    {
+        if (panel == null)
+            return;
+
+        Button[] buttons = panel.GetComponentsInChildren<Button>(true);
+
+        foreach (Button button in buttons)
+        {
+            if (button != null && button.GetComponent<MedievalButtonAnimator>() == null)
+                button.gameObject.AddComponent<MedievalButtonAnimator>();
+        }
     }
 
     public void ChooseA()
@@ -136,15 +172,14 @@ public class EventUIController : MonoBehaviour
 
         if (string.IsNullOrWhiteSpace(playerResponse))
         {
-            if (feedbackReasonText != null)
-                feedbackReasonText.text = "Scrie un raspuns mai intai.";
-
-            if (feedbackStatsText != null)
-                feedbackStatsText.text = "";
-
-            ShowFeedbackPanel();
+            ClearFeedback();
+            SetFreeTextPlaceholder("Scrie un raspuns mai intai.");
+            ShowChoicesPanel();
+            freeTextInput.ActivateInputField();
             return;
-        } // BUG
+        }
+
+        SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
 
         if (feedbackReasonText != null)
             feedbackReasonText.text = "Se analizeaza raspunsul...";
@@ -230,6 +265,8 @@ public class EventUIController : MonoBehaviour
         if (freeTextInput != null)
             freeTextInput.text = "";
 
+        SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
+
         lastResolvedChoice = null;
 
         ShowFeedbackPanel();
@@ -277,6 +314,8 @@ public class EventUIController : MonoBehaviour
         if (freeTextInput != null)
             freeTextInput.text = "";
 
+        SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
+
         ClearFeedback();
 
         if (choicesPanel != null)
@@ -315,6 +354,7 @@ public class EventUIController : MonoBehaviour
             freeTextInput.text = "";
 
         lastResolvedChoice = null;
+        SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
         ClearFeedback();
         ShowChoicesPanel();
     }
