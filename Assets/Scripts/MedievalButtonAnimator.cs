@@ -6,12 +6,12 @@ using UnityEngine.UI;
 [RequireComponent(typeof(Button))]
 public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler, ISelectHandler, IDeselectHandler
 {
-    private static readonly Color NormalColor = new Color(0.30f, 0.16f, 0.07f, 1f);
-    private static readonly Color HoverColor = new Color(0.43f, 0.24f, 0.09f, 1f);
-    private static readonly Color PressedColor = new Color(0.18f, 0.09f, 0.04f, 1f);
-    private static readonly Color DisabledColor = new Color(0.18f, 0.15f, 0.12f, 0.72f);
-    private static readonly Color GoldColor = new Color(0.86f, 0.58f, 0.20f, 1f);
-    private static readonly Color BrightGoldColor = new Color(1f, 0.76f, 0.32f, 1f);
+    private static readonly Color NormalColor = new Color(0.30f, 0.16f, 0.07f, 0.76f);
+    private static readonly Color HoverColor = new Color(0.43f, 0.24f, 0.09f, 0.86f);
+    private static readonly Color PressedColor = new Color(0.18f, 0.09f, 0.04f, 0.92f);
+    private static readonly Color DisabledColor = new Color(0.18f, 0.15f, 0.12f, 0.45f);
+    private static readonly Color GoldColor = new Color(0.86f, 0.58f, 0.20f, 0.92f);
+    private static readonly Color BrightGoldColor = new Color(1f, 0.76f, 0.32f, 0.95f);
     private static readonly Color TextColor = new Color(1f, 0.91f, 0.70f, 1f);
 
     private const float HoverScale = 1.045f;
@@ -22,6 +22,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
     private Button button;
     private Image image;
     private TMP_Text[] labels;
+    private TMP_FontAsset medievalFont;
     private Vector3 baseScale;
     private Vector3 targetScale;
     private Color targetColor;
@@ -34,6 +35,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
         button = GetComponent<Button>();
         image = GetComponent<Image>();
         labels = GetComponentsInChildren<TMP_Text>(true);
+        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Bangers SDF");
         baseScale = rectTransform.localScale;
         targetScale = baseScale;
 
@@ -112,7 +114,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
         AddShadow();
         AddOutline();
         AddTrim("TopGoldTrim", 0.93f, 1f, GoldColor);
-        AddTrim("BottomDarkTrim", 0f, 0.08f, new Color(0.08f, 0.035f, 0.015f, 0.95f));
+        AddTrim("BottomDarkTrim", 0f, 0.08f, new Color(0.08f, 0.035f, 0.015f, 0.82f));
         AddTrim("InnerHighlight", 0.70f, 0.82f, new Color(1f, 0.83f, 0.45f, 0.18f));
         StyleLabels();
     }
@@ -175,6 +177,10 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
 
             label.color = TextColor;
             label.fontStyle |= FontStyles.Bold;
+            label.characterSpacing = 2f;
+
+            if (medievalFont != null)
+                label.font = medievalFont;
 
             UnityEngine.UI.Shadow shadow = GetExactShadow(label.gameObject);
             if (shadow == null)

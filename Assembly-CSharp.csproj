@@ -57,6 +57,7 @@
     <Compile Include="Assets\Scripts\OllamaEvaluator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
     <Compile Include="Assets\Scripts\AnimationsOfTheObjects\DoorClickSimple.cs" />
+    <Compile Include="Assets\Scripts\MedievalFeedbackPanel.cs" />
     <Compile Include="Assets\Scripts\AnimationsOfTheObjects\PeasantMover.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />

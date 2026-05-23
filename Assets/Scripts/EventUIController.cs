@@ -37,11 +37,16 @@ public class EventUIController : MonoBehaviour
     private int pendingRespectEffect;
     private int pendingIntelligenceEffect;
     private string defaultFreeTextPlaceholder;
+    private TMP_FontAsset medievalFont;
+    private MedievalFeedbackPanel medievalFeedbackPanel;
 
     private void Start()
     {
+        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Bangers SDF");
         CacheDefaultFreeTextPlaceholder();
         ApplyMedievalButtonStyle();
+        ApplyMedievalTextStyle();
+        ApplyMedievalFeedbackStyle();
         HideEventUI();
     }
 
@@ -107,6 +112,83 @@ public class EventUIController : MonoBehaviour
         }
     }
 
+    private void ApplyMedievalFeedbackStyle()
+    {
+        if (feedbackPanel == null)
+            return;
+
+        medievalFeedbackPanel = feedbackPanel.GetComponent<MedievalFeedbackPanel>();
+
+        if (medievalFeedbackPanel == null)
+            medievalFeedbackPanel = feedbackPanel.AddComponent<MedievalFeedbackPanel>();
+
+        medievalFeedbackPanel.Initialize(feedbackReasonText, feedbackStatsText);
+    }
+
+    private void ApplyMedievalTextStyle()
+    {
+        StyleMedievalText(eventTitleText, 46f, new Color(1f, 0.82f, 0.36f, 1f));
+        StyleMedievalText(eventDescriptionText, 32f, new Color(1f, 0.91f, 0.74f, 1f));
+        StyleMedievalText(choiceAText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
+        StyleMedievalText(choiceBText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
+        StyleMedievalText(choiceCText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
+
+        if (freeTextInput != null)
+        {
+            StyleMedievalText(freeTextInput.textComponent, 28f, new Color(1f, 0.93f, 0.76f, 1f));
+
+            if (freeTextInput.placeholder is TMP_Text placeholderText)
+                StyleMedievalText(placeholderText, 24f, new Color(1f, 0.84f, 0.55f, 0.75f));
+
+            Image inputImage = freeTextInput.GetComponent<Image>();
+            if (inputImage != null)
+                inputImage.color = new Color(0.11f, 0.06f, 0.03f, 0.58f);
+        }
+    }
+
+    private void StyleMedievalText(TMP_Text text, float maxSize, Color color)
+    {
+        if (text == null)
+            return;
+
+        if (medievalFont != null)
+            text.font = medievalFont;
+
+        text.color = color;
+        text.fontStyle |= FontStyles.Bold;
+        text.characterSpacing = 1.2f;
+        text.enableAutoSizing = true;
+        text.fontSizeMin = Mathf.Max(16f, maxSize * 0.55f);
+        text.fontSizeMax = maxSize;
+
+        Outline outline = text.GetComponent<Outline>();
+        if (outline == null)
+            outline = text.gameObject.AddComponent<Outline>();
+
+        outline.effectColor = new Color(0.035f, 0.015f, 0.005f, 0.92f);
+        outline.effectDistance = new Vector2(1.6f, -1.6f);
+
+        Shadow shadow = GetExactShadow(text.gameObject);
+        if (shadow == null)
+            shadow = text.gameObject.AddComponent<Shadow>();
+
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.62f);
+        shadow.effectDistance = new Vector2(2.5f, -2.5f);
+    }
+
+    private Shadow GetExactShadow(GameObject target)
+    {
+        Shadow[] shadows = target.GetComponents<Shadow>();
+
+        foreach (Shadow shadow in shadows)
+        {
+            if (shadow != null && shadow.GetType() == typeof(Shadow))
+                return shadow;
+        }
+
+        return null;
+    }
+
     public void ChooseA()
     {
         if (currentEvent != null)
@@ -151,6 +233,9 @@ public class EventUIController : MonoBehaviour
                 pendingIntelligenceEffect
             );
 
+        if (medievalFeedbackPanel != null)
+            medievalFeedbackPanel.ShowResult();
+
         ShowFeedbackPanel();
     }
 
@@ -181,11 +266,18 @@ public class EventUIController : MonoBehaviour
 
         SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
 
-        if (feedbackReasonText != null)
-            feedbackReasonText.text = "Se analizeaza raspunsul...";
+        if (medievalFeedbackPanel != null)
+        {
+            medievalFeedbackPanel.ShowLoading();
+        }
+        else
+        {
+            if (feedbackReasonText != null)
+                feedbackReasonText.text = "Se analizeaza raspunsul...";
 
-        if (feedbackStatsText != null)
-            feedbackStatsText.text = "";
+            if (feedbackStatsText != null)
+                feedbackStatsText.text = "";
+        }
 
         ShowFeedbackPanel();
 
@@ -269,6 +361,9 @@ public class EventUIController : MonoBehaviour
 
         lastResolvedChoice = null;
 
+        if (medievalFeedbackPanel != null)
+            medievalFeedbackPanel.ShowResult();
+
         ShowFeedbackPanel();
     }
 
@@ -317,6 +412,8 @@ public class EventUIController : MonoBehaviour
         SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
 
         ClearFeedback();
+        if (medievalFeedbackPanel != null)
+            medievalFeedbackPanel.ShowResult();
 
         if (choicesPanel != null)
             choicesPanel.SetActive(false);
