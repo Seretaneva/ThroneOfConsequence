@@ -6,8 +6,8 @@ public class MedievalFeedbackPanel : MonoBehaviour
 {
     private static readonly Color PanelColor = new Color(0.12f, 0.065f, 0.035f, 0.68f);
     private static readonly Color GoldColor = new Color(0.88f, 0.60f, 0.20f, 0.92f);
-    private static readonly Color TextColor = new Color(1f, 0.92f, 0.72f, 1f);
-    private static readonly Color StatColor = new Color(0.98f, 0.78f, 0.38f, 1f);
+    private static readonly Color TextColor = new Color(1f, 0.96f, 0.82f, 1f);
+    private static readonly Color StatColor = new Color(1f, 0.82f, 0.32f, 1f);
 
     private TMP_Text reasonText;
     private TMP_Text statsText;
@@ -21,7 +21,7 @@ public class MedievalFeedbackPanel : MonoBehaviour
     {
         reasonText = reason;
         statsText = stats;
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Bangers SDF");
+        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
 
         ApplyPanelStyle();
         ApplyTextStyle(reasonText, TextColor, 38f);
@@ -116,25 +116,27 @@ public class MedievalFeedbackPanel : MonoBehaviour
 
         text.color = color;
         text.fontStyle |= FontStyles.Bold;
-        text.characterSpacing = 1.5f;
+        text.characterSpacing = 0.7f;
         text.enableAutoSizing = true;
         text.fontSizeMin = Mathf.Max(18f, minSize * 0.55f);
         text.fontSizeMax = minSize;
         text.alignment = TextAlignmentOptions.Center;
+        text.outlineColor = new Color32(18, 8, 2, 255);
+        text.outlineWidth = 0.22f;
 
         Outline outline = text.GetComponent<Outline>();
         if (outline == null)
             outline = text.gameObject.AddComponent<Outline>();
 
-        outline.effectColor = new Color(0.04f, 0.015f, 0.005f, 0.92f);
-        outline.effectDistance = new Vector2(1.8f, -1.8f);
+        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.98f);
+        outline.effectDistance = new Vector2(2.4f, -2.4f);
 
         UnityEngine.UI.Shadow shadow = GetExactShadow(text.gameObject);
         if (shadow == null)
             shadow = text.gameObject.AddComponent<UnityEngine.UI.Shadow>();
 
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.68f);
-        shadow.effectDistance = new Vector2(3f, -3f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.82f);
+        shadow.effectDistance = new Vector2(3.6f, -3.6f);
     }
 
     private void CreateLoadingSeal()

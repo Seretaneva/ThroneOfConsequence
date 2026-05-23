@@ -42,7 +42,7 @@ public class EventUIController : MonoBehaviour
 
     private void Start()
     {
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Bangers SDF");
+        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
         CacheDefaultFreeTextPlaceholder();
         ApplyMedievalButtonStyle();
         ApplyMedievalTextStyle();
@@ -127,18 +127,18 @@ public class EventUIController : MonoBehaviour
 
     private void ApplyMedievalTextStyle()
     {
-        StyleMedievalText(eventTitleText, 46f, new Color(1f, 0.82f, 0.36f, 1f));
-        StyleMedievalText(eventDescriptionText, 32f, new Color(1f, 0.91f, 0.74f, 1f));
-        StyleMedievalText(choiceAText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
-        StyleMedievalText(choiceBText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
-        StyleMedievalText(choiceCText, 30f, new Color(1f, 0.91f, 0.70f, 1f));
+        StyleMedievalText(eventTitleText, 46f, new Color(1f, 0.80f, 0.28f, 1f), 0.24f);
+        StyleMedievalText(eventDescriptionText, 32f, new Color(1f, 0.96f, 0.82f, 1f), 0.18f);
+        StyleMedievalText(choiceAText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
+        StyleMedievalText(choiceBText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
+        StyleMedievalText(choiceCText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
 
         if (freeTextInput != null)
         {
-            StyleMedievalText(freeTextInput.textComponent, 28f, new Color(1f, 0.93f, 0.76f, 1f));
+            StyleMedievalText(freeTextInput.textComponent, 28f, new Color(1f, 0.97f, 0.86f, 1f), 0.18f);
 
             if (freeTextInput.placeholder is TMP_Text placeholderText)
-                StyleMedievalText(placeholderText, 24f, new Color(1f, 0.84f, 0.55f, 0.75f));
+                StyleMedievalText(placeholderText, 24f, new Color(1f, 0.86f, 0.54f, 0.82f), 0.14f);
 
             Image inputImage = freeTextInput.GetComponent<Image>();
             if (inputImage != null)
@@ -146,7 +146,7 @@ public class EventUIController : MonoBehaviour
         }
     }
 
-    private void StyleMedievalText(TMP_Text text, float maxSize, Color color)
+    private void StyleMedievalText(TMP_Text text, float maxSize, Color color, float outlineWidth)
     {
         if (text == null)
             return;
@@ -156,24 +156,26 @@ public class EventUIController : MonoBehaviour
 
         text.color = color;
         text.fontStyle |= FontStyles.Bold;
-        text.characterSpacing = 1.2f;
+        text.characterSpacing = 0.6f;
         text.enableAutoSizing = true;
         text.fontSizeMin = Mathf.Max(16f, maxSize * 0.55f);
         text.fontSizeMax = maxSize;
+        text.outlineColor = new Color32(18, 8, 2, 255);
+        text.outlineWidth = outlineWidth;
 
         Outline outline = text.GetComponent<Outline>();
         if (outline == null)
             outline = text.gameObject.AddComponent<Outline>();
 
-        outline.effectColor = new Color(0.035f, 0.015f, 0.005f, 0.92f);
-        outline.effectDistance = new Vector2(1.6f, -1.6f);
+        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.96f);
+        outline.effectDistance = new Vector2(2.2f, -2.2f);
 
         Shadow shadow = GetExactShadow(text.gameObject);
         if (shadow == null)
             shadow = text.gameObject.AddComponent<Shadow>();
 
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.62f);
-        shadow.effectDistance = new Vector2(2.5f, -2.5f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.78f);
+        shadow.effectDistance = new Vector2(3.2f, -3.2f);
     }
 
     private Shadow GetExactShadow(GameObject target)

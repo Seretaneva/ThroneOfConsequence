@@ -18,27 +18,38 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
         Action<string> onError)
     {
         string systemPrompt =
-            "Esti evaluator pentru un joc medieval de strategie. " +
-            "Raspunde doar cu JSON valid. Fara explicatii extra.";
+            "Esti un judecator narativ pentru un joc medieval de strategie. " +
+            "Evaluezi decizia jucatorului strict dupa contextul evenimentului, nu inventezi fapte noi. " +
+            "Raspunzi doar cu JSON valid, fara markdown si fara text in afara JSON-ului.";
 
         string userPrompt =
-$@"Evalueaza decizia jucatorului.
+$@"Evalueaza decizia jucatorului ca un consilier regal lucid si corect.
 
 Eveniment: {eventTitle}
 Descriere: {eventDescription}
 Raspuns jucator: {playerResponse}
 
-Returneaza DOAR JSON valid.
+Sarcina:
+1. Intelege problema din eveniment.
+2. Intelege ce actiune concreta propune jucatorul.
+3. Decide efectele probabile asupra aurului, respectului si inteligentei.
+4. Scrie un motiv clar pentru jucator, in romana, ca sa inteleaga de ce a primit acele efecte.
 
-Reguli:
-- goldEffect pozitiv doar daca jucatorul castiga bani direct.
-- goldEffect negativ daca trimite oameni, armata, agenti sau construieste ceva.
-- Nu da +10 decat pentru castiguri uriase.
-- Pentru actiuni normale foloseste valori intre -4 si +4.
-- respectEffect pozitiv daca oamenii, negustorii sau taranii apreciaza decizia.
-- intelligenceEffect pozitiv daca decizia este discreta, strategica sau bine calculata.
-- reason trebuie sa fie in romana, maximum 8 cuvinte.
-- Nu explica. Nu analiza in text. Doar JSON.
+Reguli de evaluare:
+- Foloseste numai informatiile din eveniment si raspunsul jucatorului.
+- Daca raspunsul este vag sau nu rezolva problema, efectele trebuie sa fie mici sau negative.
+- Pentru decizii normale foloseste valori intre -3 si +3.
+- Foloseste valori intre -4 si -6 sau +4 si +6 doar pentru decizii foarte bune, foarte rele sau costisitoare.
+- Nu folosi niciodata valori peste 6 sau sub -6.
+- goldEffect creste doar daca decizia aduce bani, taxe, comert, prada sau economie clara.
+- goldEffect scade daca decizia consuma resurse: ajutor, soldati, constructii, plati, provizii sau reparatii.
+- respectEffect creste daca decizia pare dreapta, miloasa, protectoare sau populara.
+- respectEffect scade daca decizia pare cruda, nedreapta, lacoma, ignoranta sau lasa oamenii fara ajutor.
+- intelligenceEffect creste daca decizia este strategica, prudenta, investigheaza, negociaza sau previne riscuri.
+- intelligenceEffect scade daca decizia este impulsiva, confuza, risipa fara plan sau ignora consecinte evidente.
+- Reason trebuie sa fie o singura propozitie coerenta, 12-22 cuvinte, adresata jucatorului.
+- Reason trebuie sa explice efectul principal al deciziei, nu sa repete doar scorurile.
+- Pastreaza ton medieval simplu si clar, fara poezie exagerata.
 
 Format:
 {{
@@ -46,7 +57,9 @@ Format:
   ""respectEffect"": 0,
   ""intelligenceEffect"": 0,
   ""reason"": """"
-}}";
+}}
+
+Returneaza DOAR JSON valid.";
 
         OllamaChatRequest requestData = new OllamaChatRequest
         {
@@ -60,8 +73,8 @@ Format:
             },
             options = new OllamaOptions
             {
-                temperature = 0.2f,
-                num_predict = 80
+                temperature = 0.15f,
+                num_predict = 160
             }
         };
 
@@ -132,9 +145,9 @@ Format:
                 yield break;
             }
 
-            result.goldEffect = Mathf.Clamp(result.goldEffect, -10, 10);
-            result.respectEffect = Mathf.Clamp(result.respectEffect, -10, 10);
-            result.intelligenceEffect = Mathf.Clamp(result.intelligenceEffect, -10, 10);
+            result.goldEffect = Mathf.Clamp(result.goldEffect, -6, 6);
+            result.respectEffect = Mathf.Clamp(result.respectEffect, -6, 6);
+            result.intelligenceEffect = Mathf.Clamp(result.intelligenceEffect, -6, 6);
 
             if (string.IsNullOrWhiteSpace(result.reason))
                 result.reason = "Curtea asteapta efectele deciziei.";

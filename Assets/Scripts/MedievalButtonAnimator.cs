@@ -12,7 +12,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
     private static readonly Color DisabledColor = new Color(0.18f, 0.15f, 0.12f, 0.45f);
     private static readonly Color GoldColor = new Color(0.86f, 0.58f, 0.20f, 0.92f);
     private static readonly Color BrightGoldColor = new Color(1f, 0.76f, 0.32f, 0.95f);
-    private static readonly Color TextColor = new Color(1f, 0.91f, 0.70f, 1f);
+    private static readonly Color TextColor = new Color(1f, 0.95f, 0.76f, 1f);
 
     private const float HoverScale = 1.045f;
     private const float PressedScale = 0.965f;
@@ -35,7 +35,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
         button = GetComponent<Button>();
         image = GetComponent<Image>();
         labels = GetComponentsInChildren<TMP_Text>(true);
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Bangers SDF");
+        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
         baseScale = rectTransform.localScale;
         targetScale = baseScale;
 
@@ -177,7 +177,9 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
 
             label.color = TextColor;
             label.fontStyle |= FontStyles.Bold;
-            label.characterSpacing = 2f;
+            label.characterSpacing = 0.8f;
+            label.outlineColor = new Color32(18, 8, 2, 255);
+            label.outlineWidth = 0.22f;
 
             if (medievalFont != null)
                 label.font = medievalFont;
@@ -186,15 +188,15 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
             if (shadow == null)
                 shadow = label.gameObject.AddComponent<UnityEngine.UI.Shadow>();
 
-            shadow.effectColor = new Color(0f, 0f, 0f, 0.7f);
-            shadow.effectDistance = new Vector2(2f, -2f);
+            shadow.effectColor = new Color(0f, 0f, 0f, 0.82f);
+            shadow.effectDistance = new Vector2(3f, -3f);
 
             Outline outline = label.GetComponent<Outline>();
             if (outline == null)
                 outline = label.gameObject.AddComponent<Outline>();
 
-            outline.effectColor = new Color(0.05f, 0.02f, 0.01f, 0.9f);
-            outline.effectDistance = new Vector2(1.5f, -1.5f);
+            outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.98f);
+            outline.effectDistance = new Vector2(2.2f, -2.2f);
         }
     }
 
