@@ -38,50 +38,7 @@ public class EventUIController : MonoBehaviour
 
     private void Start()
     {
-        // LoadCurrentEvent();
-        // ShowChoicesPanel();
-         HideEventUI();
-    }
-
-    private void LoadCurrentEvent()
-    {
-        currentEvent = EventManager.Instance.GetCurrentEvent();
-
-        if (currentEvent == null)
-        {
-            Debug.LogError("No current event found.");
-            return;
-        }
-
-        if (eventTitleText != null)
-            eventTitleText.text = currentEvent.eventTitle;
-
-        if (eventDescriptionText != null)
-            eventDescriptionText.text = currentEvent.description;
-
-        if (choiceAText != null)
-            choiceAText.text = currentEvent.choiceA != null ? currentEvent.choiceA.choiceText : "";
-
-        if (choiceBText != null)
-            choiceBText.text = currentEvent.choiceB != null ? currentEvent.choiceB.choiceText : "";
-
-        if (choiceCText != null)
-            choiceCText.text = currentEvent.choiceC != null ? currentEvent.choiceC.choiceText : "";
-
-        if (freeTextInput != null)
-            freeTextInput.text = "";
-
-        lastResolvedChoice = null;
-        ClearFeedback();
-    }
-
-    private void ClearFeedback()
-    {
-        if (feedbackReasonText != null)
-            feedbackReasonText.text = "";
-
-        if (feedbackStatsText != null)
-            feedbackStatsText.text = "";
+        HideEventUI();
     }
 
     private void ShowChoicesPanel()
@@ -99,22 +56,37 @@ public class EventUIController : MonoBehaviour
             choicesPanel.SetActive(false);
 
         if (feedbackPanel != null)
+        {
             feedbackPanel.SetActive(true);
+            feedbackPanel.transform.SetAsLastSibling();
+        }
+    }
+
+    private void ClearFeedback()
+    {
+        if (feedbackReasonText != null)
+            feedbackReasonText.text = "";
+
+        if (feedbackStatsText != null)
+            feedbackStatsText.text = "";
     }
 
     public void ChooseA()
     {
-        ResolveChoice(currentEvent.choiceA);
+        if (currentEvent != null)
+            ResolveChoice(currentEvent.choiceA);
     }
 
     public void ChooseB()
     {
-        ResolveChoice(currentEvent.choiceB);
+        if (currentEvent != null)
+            ResolveChoice(currentEvent.choiceB);
     }
 
     public void ChooseC()
     {
-        ResolveChoice(currentEvent.choiceC);
+        if (currentEvent != null)
+            ResolveChoice(currentEvent.choiceC);
     }
 
     private void ResolveChoice(ChoiceData choice)
@@ -137,13 +109,11 @@ public class EventUIController : MonoBehaviour
             feedbackReasonText.text = choice.consequenceText;
 
         if (feedbackStatsText != null)
-        {
             feedbackStatsText.text = FormatStatEffects(
                 pendingGoldEffect,
                 pendingRespectEffect,
                 pendingIntelligenceEffect
             );
-        }
 
         ShowFeedbackPanel();
     }
@@ -172,14 +142,20 @@ public class EventUIController : MonoBehaviour
             if (feedbackStatsText != null)
                 feedbackStatsText.text = "";
 
+            ShowFeedbackPanel();
             return;
-        }
+        } // BUG
 
         if (feedbackReasonText != null)
             feedbackReasonText.text = "Se analizeaza raspunsul...";
 
         if (feedbackStatsText != null)
             feedbackStatsText.text = "";
+
+        ShowFeedbackPanel();
+
+        Debug.Log("SUBMIT APASAT");
+        Debug.Log("Text: " + playerResponse);
 
         if (ollamaEvaluator == null)
         {
@@ -199,8 +175,11 @@ public class EventUIController : MonoBehaviour
             },
             onError: error =>
             {
-                Debug.LogWarning("Ollama failed, using fallback evaluator. Error: " + error);
+                Debug.LogWarning("Ollama failed: " + error);
+
                 StatEvaluationResult fallbackResult = ruleBasedEvaluator.Evaluate(playerResponse);
+                fallbackResult.reason = "AI-ul nu a raspuns. Folosesc evaluare locala.";
+
                 ApplyEvaluationResult(fallbackResult);
             }
         ));
@@ -208,40 +187,53 @@ public class EventUIController : MonoBehaviour
 
     private void ApplyEvaluationResult(StatEvaluationResult result)
     {
+        Debug.Log("APPLY RESULT A FOST CHEMAT");
+
         if (result == null)
         {
             Debug.LogError("Evaluation result is null.");
             return;
         }
 
-        GameState.Instance.AddGold(result.goldEffect);
-        GameState.Instance.AddRespect(result.respectEffect);
-        GameState.Instance.AddIntelligence(result.intelligenceEffect);
-
         pendingGoldEffect = result.goldEffect;
         pendingRespectEffect = result.respectEffect;
         pendingIntelligenceEffect = result.intelligenceEffect;
 
         if (feedbackReasonText != null)
+        {
+            Debug.Log("===========================> " + result.reason);
             feedbackReasonText.text = result.reason;
+        }
+        else
+            Debug.LogError("feedbackReasonText este null.");
 
         if (feedbackStatsText != null)
-        {
             feedbackStatsText.text = FormatStatEffects(
                 pendingGoldEffect,
                 pendingRespectEffect,
                 pendingIntelligenceEffect
             );
+        else
+            Debug.LogError("feedbackStatsText este null.");
+
+        if (GameState.Instance != null)
+        {
+            GameState.Instance.AddGold(result.goldEffect);
+            GameState.Instance.AddRespect(result.respectEffect);
+            GameState.Instance.AddIntelligence(result.intelligenceEffect);
+        }
+        else
+        {
+            Debug.LogError("GameState.Instance este null.");
         }
 
         if (freeTextInput != null)
             freeTextInput.text = "";
 
         lastResolvedChoice = null;
+
         ShowFeedbackPanel();
     }
-
-   
 
     public void ContinueToNextEvent()
     {
@@ -262,9 +254,10 @@ public class EventUIController : MonoBehaviour
         string respectText = respect >= 0 ? $"+{respect}" : respect.ToString();
         string intelligenceText = intelligence >= 0 ? $"+{intelligence}" : intelligence.ToString();
 
-        return $"Gold: {goldText} |Respect: {respectText} |Intelligence:  {intelligenceText}";
+        return $"Gold: {goldText} | Respect: {respectText} | Intelligence: {intelligenceText}";
     }
-   public void HideEventUI()
+
+    public void HideEventUI()
     {
         if (eventTitleText != null)
             eventTitleText.text = "";
@@ -283,6 +276,8 @@ public class EventUIController : MonoBehaviour
 
         if (freeTextInput != null)
             freeTextInput.text = "";
+
+        ClearFeedback();
 
         if (choicesPanel != null)
             choicesPanel.SetActive(false);

@@ -6,8 +6,9 @@ using UnityEngine.Networking;
 
 public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
 {
-    [SerializeField] private string modelName = "qwen2.5:7b-instruct";
-    [SerializeField] private string apiUrl = "http://localhost:11434/api/chat";
+    [SerializeField] private string modelName = "llama3.2:3b";
+    [SerializeField] private string apiUrl = "http://127.0.0.1:11434/api/chat";
+    [SerializeField] private int timeoutSeconds = 8;
 
     public IEnumerator EvaluateResponse(
         string eventTitle,
@@ -17,58 +18,41 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
         Action<string> onError)
     {
         string systemPrompt =
-            "Esti evaluatorul unui joc medieval de strategie. " +
-            "Analizeaza raspunsul jucatorului si returneaza STRICT JSON valid. " +
-            "Valorile goldEffect, respectEffect si intelligenceEffect trebuie sa fie intre -10 si 10. " +
-            "Campul \"reason\" trebuie sa descrie consecinta politica sau sociala a deciziei regelui, nu sa repete ce a ales jucatorul. " +
-            "Campul \"reason\" trebuie sa fie EXACT o singura propozitie scurta, maximum 12 cuvinte. " +
-            "Nu adauga text in afara JSON-ului.";
+            "Esti evaluator pentru un joc medieval de strategie. " +
+            "Raspunde doar cu JSON valid. Fara explicatii extra.";
 
         string userPrompt =
-            $"Event title: {eventTitle}\n" +
-            $"Event description: {eventDescription}\n" +
-            $"Player response: {playerResponse}\n\n" +
+$@"Evalueaza decizia jucatorului.
 
-            "Evalueaza raspunsul jucatorului.\n" +
-            "Reguli:\n" +
-            "- Valorile goldEffect, respectEffect si intelligenceEffect trebuie sa fie intre -10 si 10.\n" +
-            "- Daca raspunsul este generos sau ajuta oamenii, creste respectEffect.\n" +
-            "- Daca raspunsul este lacom sau egoist, creste goldEffect dar scade respectEffect.\n" +
-            "- Daca raspunsul este inteligent sau strategic, creste intelligenceEffect.\n" +
-            "- Daca raspunsul este crud sau nedrept, scade respectEffect.\n" +
-            "- Campul reason NU trebuie sa repete alegerea jucatorului.\n" +
-            "- Campul reason trebuie sa descrie consecinta deciziei asupra satului, curtii sau reputatiei regelui.\n" +
-            "- Campul reason trebuie sa fie O SINGURA PROPOZITIE scurta (max 12 cuvinte).\n\n" +
+Eveniment: {eventTitle}
+Descriere: {eventDescription}
+Raspuns jucator: {playerResponse}
 
-            "Exemplu bun de reason:\n" +
-            "- \"Satenii se tem de cruzimea ta.\"\n" +
-            "- \"Gestul tau aduce incredere si loialitate.\"\n" +
-            "- \"Hotararea intareste ordinea, dar costa resurse.\"\n\n" +
+Returneaza DOAR JSON valid.
 
-            "Returneaza STRICT JSON valid in acest format:\n" +
-            "{\n" +
-            "  \"goldEffect\": 0,\n" +
-            "  \"respectEffect\": 0,\n" +
-            "  \"intelligenceEffect\": 0,\n" +
-            "  \"reason\": \"o singura propozitie despre consecinta\"\n" +
-            "}";
-        
+Reguli:
+- goldEffect pozitiv doar daca jucatorul castiga bani direct.
+- goldEffect negativ daca trimite oameni, armata, agenti sau construieste ceva.
+- Nu da +10 decat pentru castiguri uriase.
+- Pentru actiuni normale foloseste valori intre -4 si +4.
+- respectEffect pozitiv daca oamenii, negustorii sau taranii apreciaza decizia.
+- intelligenceEffect pozitiv daca decizia este discreta, strategica sau bine calculata.
+- reason trebuie sa fie in romana, maximum 8 cuvinte.
+- Nu explica. Nu analiza in text. Doar JSON.
+
+Format:
+{{
+  ""goldEffect"": 0,
+  ""respectEffect"": 0,
+  ""intelligenceEffect"": 0,
+  ""reason"": """"
+}}";
+
         OllamaChatRequest requestData = new OllamaChatRequest
         {
             model = modelName,
             stream = false,
-            format = new JsonSchemaFormat
-            {
-                type = "object",
-                properties = new SchemaProperties
-                {
-                    goldEffect = new SchemaType { type = "integer" },
-                    respectEffect = new SchemaType { type = "integer" },
-                    intelligenceEffect = new SchemaType { type = "integer" },
-                    reason = new SchemaType { type = "string" }
-                },
-                required = new string[] { "goldEffect", "respectEffect", "intelligenceEffect", "reason" }
-            },
+            format = "json",
             messages = new OllamaMessage[]
             {
                 new OllamaMessage { role = "system", content = systemPrompt },
@@ -76,61 +60,93 @@ public class OllamaEvaluator : MonoBehaviour, IResponseEvaluator
             },
             options = new OllamaOptions
             {
-                temperature = 0
+                temperature = 0.2f,
+                num_predict = 80
             }
         };
 
         string json = JsonUtility.ToJson(requestData);
         byte[] bodyRaw = Encoding.UTF8.GetBytes(json);
 
-        using UnityWebRequest request = new UnityWebRequest(apiUrl, "POST");
-        request.uploadHandler = new UploadHandlerRaw(bodyRaw);
-        request.downloadHandler = new DownloadHandlerBuffer();
-        request.SetRequestHeader("Content-Type", "application/json");
-
-        yield return request.SendWebRequest();
-
-        if (request.result != UnityWebRequest.Result.Success)
+        using (UnityWebRequest request = new UnityWebRequest(apiUrl, "POST"))
         {
-            onError?.Invoke("Eroare la conectarea cu Ollama: " + request.error);
-            yield break;
-        }
+            request.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            request.downloadHandler = new DownloadHandlerBuffer();
+            request.SetRequestHeader("Content-Type", "application/json");
+            request.timeout = timeoutSeconds;
 
-        string responseText = request.downloadHandler.text;
+            Debug.Log("Trimit catre Ollama...");
+            Debug.Log("Request JSON: " + json);
 
-        OllamaChatResponse response;
-        try
-        {
-            response = JsonUtility.FromJson<OllamaChatResponse>(responseText);
-        }
-        catch
-        {
-            onError?.Invoke("Raspuns invalid de la Ollama.");
-            yield break;
-        }
+            yield return request.SendWebRequest();
 
-        if (response == null || response.message == null || string.IsNullOrWhiteSpace(response.message.content))
-        {
-            onError?.Invoke("Ollama nu a returnat continut.");
-            yield break;
-        }
+            Debug.Log("Request result: " + request.result);
+            Debug.Log("Request error: " + request.error);
+            Debug.Log("Raspuns brut Ollama: " + request.downloadHandler.text);
 
-        StatEvaluationResult result;
-        try
-        {
-            result = JsonUtility.FromJson<StatEvaluationResult>(response.message.content);
-        }
-        catch
-        {
-            onError?.Invoke("JSON-ul din raspunsul Ollama nu a putut fi citit.");
-            yield break;
-        }
+            if (request.result != UnityWebRequest.Result.Success)
+            {
+                onError?.Invoke("Eroare la conectarea cu Ollama: " + request.error);
+                yield break;
+            }
 
-        result.goldEffect = Mathf.Clamp(result.goldEffect, -10, 10);
-        result.respectEffect = Mathf.Clamp(result.respectEffect, -10, 10);
-        result.intelligenceEffect = Mathf.Clamp(result.intelligenceEffect, -10, 10);
+            string responseText = request.downloadHandler.text;
 
-        onSuccess?.Invoke(result);
+            OllamaChatResponse response;
+
+            try
+            {
+                response = JsonUtility.FromJson<OllamaChatResponse>(responseText);
+            }
+            catch
+            {
+                onError?.Invoke("Raspuns invalid de la Ollama: " + responseText);
+                yield break;
+            }
+
+            if (response == null || response.message == null || string.IsNullOrWhiteSpace(response.message.content))
+            {
+                onError?.Invoke("Ollama nu a returnat continut.");
+                yield break;
+            }
+
+            string content = response.message.content.Trim();
+
+            Debug.Log("JSON generat de model: " + content);
+
+            StatEvaluationResult result;
+
+            try
+            {
+                result = JsonUtility.FromJson<StatEvaluationResult>(content);
+            }
+            catch
+            {
+                onError?.Invoke("JSON-ul din raspunsul Ollama nu a putut fi citit: " + content);
+                yield break;
+            }
+
+            if (result == null)
+            {
+                onError?.Invoke("Rezultatul evaluarii este null.");
+                yield break;
+            }
+
+            result.goldEffect = Mathf.Clamp(result.goldEffect, -10, 10);
+            result.respectEffect = Mathf.Clamp(result.respectEffect, -10, 10);
+            result.intelligenceEffect = Mathf.Clamp(result.intelligenceEffect, -10, 10);
+
+            if (string.IsNullOrWhiteSpace(result.reason))
+                result.reason = "Curtea asteapta efectele deciziei.";
+
+            Debug.Log("RESULT PARSED:");
+            Debug.Log("Gold: " + result.goldEffect);
+            Debug.Log("Respect: " + result.respectEffect);
+            Debug.Log("Intelligence: " + result.intelligenceEffect);
+            Debug.Log("Reason: " + result.reason);
+
+            onSuccess?.Invoke(result);
+        }
     }
 }
 
@@ -139,32 +155,9 @@ public class OllamaChatRequest
 {
     public string model;
     public bool stream;
-    public JsonSchemaFormat format;
+    public string format;
     public OllamaMessage[] messages;
     public OllamaOptions options;
-}
-
-[Serializable]
-public class JsonSchemaFormat
-{
-    public string type;
-    public SchemaProperties properties;
-    public string[] required;
-}
-
-[Serializable]
-public class SchemaProperties
-{
-    public SchemaType goldEffect;
-    public SchemaType respectEffect;
-    public SchemaType intelligenceEffect;
-    public SchemaType reason;
-}
-
-[Serializable]
-public class SchemaType
-{
-    public string type;
 }
 
 [Serializable]
@@ -177,7 +170,8 @@ public class OllamaMessage
 [Serializable]
 public class OllamaOptions
 {
-    public int temperature;
+    public float temperature;
+    public int num_predict;
 }
 
 [Serializable]

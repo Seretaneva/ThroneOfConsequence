@@ -531,9 +531,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 557c4a4849151e242a529a4ab97bf219, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OllamaEvaluator
-  modelName: llama3.2:3b
+  modelName: qwen2.5:7b-instruct
   apiUrl: http://localhost:11434/api/chat
-  timeoutSeconds: 20
 --- !u!4 &83182430
 Transform:
   m_ObjectHideFlags: 0
