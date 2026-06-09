@@ -8,5 +8,6 @@ public class NPCData
     public Sprite portraitSprite;
     public string title;
     public string description;
+    public float bodyScale = 1f;
     public RuntimeAnimatorController animatorController;
 }

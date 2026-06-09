@@ -8,18 +8,23 @@ public class PeasantMover : MonoBehaviour
     public Action onReachedTarget;
 
     private Animator anim;
-    private bool isMoving = false; 
+    private bool isMoving = false;
+
+    void Awake()
+    {
+        anim = GetComponent<Animator>();
+    }
 
     void Start()
     {
-        anim = GetComponent<Animator>();
-        anim.SetBool("isWalking", false); 
+        SetWalking(false);
     }
 
-    public void StartMoving() 
+    public void StartMoving()
     {
+        anim = GetComponent<Animator>();
         isMoving = true;
-        if (anim != null) anim.SetBool("isWalking", true);
+        SetWalking(true);
     }
 
     void Update()
@@ -35,8 +40,14 @@ public class PeasantMover : MonoBehaviour
         if (Vector3.Distance(transform.position, stopPoint.position) < 0.1f)
         {
             isMoving = false;
-            if (anim != null) anim.SetBool("isWalking", false);
+            SetWalking(false);
             onReachedTarget?.Invoke();
         }
+    }
+
+    private void SetWalking(bool value)
+    {
+        if (anim != null)
+            anim.SetBool("isWalking", value);
     }
 }

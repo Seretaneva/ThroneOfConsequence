@@ -13,6 +13,7 @@ public class AudienceSequenceController : MonoBehaviour
     [SerializeField] private Transform spawnPoint;
     [SerializeField] private Transform stopPoint;
     [SerializeField] private float moveSpeed = 2f;
+    [SerializeField] private NPCManager npcManager;
 
     [Header("UI")]
     [SerializeField] private EventUIController eventUIController;
@@ -137,6 +138,11 @@ private IEnumerator PrepareForVisitorRoutine()
         if (portraitImage != null) portraitImage.gameObject.SetActive(false);
 
         // ✅ Deschide usa
+        NPCData currentNpc = null;
+
+        if (npcManager != null)
+            currentNpc = npcManager.LoadRandomNPC();
+
         if (doorClosed != null) doorClosed.SetActive(false);
         if (doorOpen != null) doorOpen.SetActive(true);
 
@@ -174,9 +180,13 @@ private IEnumerator PrepareForVisitorRoutine()
         yield return new WaitForSeconds(0.2f);
 
         // ✅ Arată portretul și UI-ul
-        if (portraitImage != null && peasantPortrait != null)
+        Sprite portraitSprite = currentNpc != null && currentNpc.portraitSprite != null
+            ? currentNpc.portraitSprite
+            : peasantPortrait;
+
+        if (portraitImage != null && portraitSprite != null)
         {
-            portraitImage.sprite = peasantPortrait;
+            portraitImage.sprite = portraitSprite;
             portraitImage.gameObject.SetActive(true);
         }
 

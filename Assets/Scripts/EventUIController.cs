@@ -27,9 +27,6 @@ public class EventUIController : MonoBehaviour
     [Header("Evaluators")]
     [SerializeField] private OllamaEvaluator ollamaEvaluator;
 
-    [Header("NPC")]
-    [SerializeField] private NPCManager npcManager;
-
     [SerializeField] private AudienceSequenceController audienceSequenceController;
 
     private RuleBasedEvaluator ruleBasedEvaluator = new RuleBasedEvaluator();
@@ -45,7 +42,7 @@ public class EventUIController : MonoBehaviour
   
 
     private void Start()
-    {   npcManager = GetComponent<NPCManager>();
+    {
         medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
         CacheDefaultFreeTextPlaceholder();
         ApplyMedievalButtonStyle();
@@ -431,9 +428,6 @@ public class EventUIController : MonoBehaviour
     public void ShowEvent(EventData eventData)
     {
         currentEvent = eventData;
-
-        if (npcManager != null)
-            npcManager.LoadRandomNPC();
 
         if (currentEvent == null)
         {
