@@ -2265,6 +2265,11 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!212 &692060520 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 5016358211738435208, guid: 741a86065cad9c545aa8e7ec00c03753, type: 3}
+  m_PrefabInstance: {fileID: 7573845328461834461}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &760037652
 GameObject:
   m_ObjectHideFlags: 0
@@ -5025,6 +5030,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2021963025}
   - component: {fileID: 2021963024}
+  - component: {fileID: 2021963026}
   m_Layer: 0
   m_Name: EventUI
   m_TagString: Untagged
@@ -5055,6 +5061,7 @@ MonoBehaviour:
   feedbackReasonText: {fileID: 167382839}
   feedbackStatsText: {fileID: 287776973}
   ollamaEvaluator: {fileID: 83182429}
+  npcManager: {fileID: 0}
   audienceSequenceController: {fileID: 132590290}
 --- !u!4 &2021963025
 Transform:
@@ -5071,6 +5078,43 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2021963026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2021963023}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4202a6dea5134c40a0e7864ce8ddf18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::NPCManager
+  npcs:
+  - npcName: NPC2
+    bodySprite: {fileID: 8790100401477364919, guid: 45b9e962ea41d374d8cf97bfc412f969, type: 3}
+    portraitSprite: {fileID: 8165316572449679646, guid: 7cdcffc2de14d6c4986f2598f8134f88, type: 3}
+    title: 
+    description: 
+  - npcName: NPC3
+    bodySprite: {fileID: -7081968342669538946, guid: 4c92ad4e394b0d24ca206dc09c7b7248, type: 3}
+    portraitSprite: {fileID: -5515134220035640716, guid: 66ac3883648e4344aa974d02d930c482, type: 3}
+    title: 
+    description: 
+  - npcName: NPC4
+    bodySprite: {fileID: -6131780538708407926, guid: d25b5300b89bec74ca7f37080d6fbdd5, type: 3}
+    portraitSprite: {fileID: -5414498893569429425, guid: f44536c75a859b34093586056e956f1b, type: 3}
+    title: 
+    description: 
+  - npcName: NPC5
+    bodySprite: {fileID: -563082559761329431, guid: 7ee570295c8579c4286b9805b5bf6937, type: 3}
+    portraitSprite: {fileID: -974701738471184004, guid: 035d02484599d274699eb5b259d5238b, type: 3}
+    title: 
+    description: 
+  npcBodyRenderer: {fileID: 692060520}
+  portraitImage: {fileID: 1139980517}
+  titleText: {fileID: 939869596}
+  descriptionText: {fileID: 600621200}
 --- !u!1 &2137846184
 GameObject:
   m_ObjectHideFlags: 0
