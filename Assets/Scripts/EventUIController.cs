@@ -49,6 +49,9 @@ public class EventUIController : MonoBehaviour
         ApplyMedievalTextStyle();
         ApplyMedievalFeedbackStyle();
         HideEventUI();
+        RoyalChronicle.Instance.AddEntry(
+        "You became Village Leader."
+);
     }
 
     private void ShowChoicesPanel()
@@ -240,6 +243,9 @@ public class EventUIController : MonoBehaviour
             medievalFeedbackPanel.ShowResult();
 
         ShowFeedbackPanel();
+        RoyalChronicle.Instance.AddEntry(
+        choice.choiceText
+        );
     }
 
     public void SubmitFreeTextResponse()
