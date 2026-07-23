@@ -12,6 +12,11 @@ public class ChoiceData
     public PersonalityEffects personalityEffects = new();
     public FactionEffects factionEffects = new();
 
+    public int goldCost;
+    public int requiredGold;
+    public int requiredRespect;
+    public int requiredIntelligence;
+
     public List<string> requiredFlags = new();
     public List<string> blockedFlags = new();
     public List<string> setFlags = new();
@@ -19,6 +24,8 @@ public class ChoiceData
 
     public List<string> nextEventIds = new();
     public List<string> unlockBuildings = new();
+    public string buildingChoiceGroup;
+    public List<string> buildingChoiceOptions = new();
     public List<string> leadershipTags = new();
 
     [TextArea]

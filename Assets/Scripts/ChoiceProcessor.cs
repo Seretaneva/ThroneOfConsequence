@@ -2,25 +2,67 @@ using UnityEngine;
 
 public static class ChoiceProcessor
 {
-    public static void ApplyChoice(ChoiceData choice)
+    public static bool CanApplyChoice(ChoiceData choice, out string failureReason)
     {
+        failureReason = "";
+
         if (choice == null)
         {
-            Debug.LogError("ChoiceProcessor: choice is null.");
-            return;
+            failureReason = "Alegerea nu este disponibila.";
+            return false;
         }
 
         if (GameState.Instance == null)
         {
-            Debug.LogError("ChoiceProcessor: GameState.Instance is null.");
-            return;
+            failureReason = "Starea jocului nu este disponibila.";
+            return false;
         }
 
+        int minimumGold = Mathf.Max(choice.goldCost, choice.requiredGold);
+
+        if (GameState.Instance.Gold < minimumGold)
+        {
+            int missingGold = minimumGold - GameState.Instance.Gold;
+            failureReason = "Iti lipsesc " + missingGold + " aur.";
+            return false;
+        }
+
+        if (GameState.Instance.Respect < choice.requiredRespect)
+        {
+            failureReason = "Necesita " + choice.requiredRespect + " Respect.";
+            return false;
+        }
+
+        if (GameState.Instance.Intelligence < choice.requiredIntelligence)
+        {
+            failureReason = "Necesita " + choice.requiredIntelligence + " Intelect.";
+            return false;
+        }
+
+        return true;
+    }
+
+    public static bool ApplyChoice(ChoiceData choice)
+    {
+        if (!CanApplyChoice(choice, out string failureReason))
+        {
+            Debug.LogWarning("ChoiceProcessor: " + failureReason);
+            return false;
+        }
+
+        ApplyCost(choice);
         ApplyVisibleStats(choice);
         ApplyFlags(choice);
         ApplyPersonality(choice);
         ApplyFactions(choice);
         ApplyBuildings(choice);
+        return true;
+    }
+
+    private static void ApplyCost(ChoiceData choice)
+    {
+        if (choice.goldCost > 0)
+            GameState.Instance.AddGold(-choice.goldCost);
     }
 
     private static void ApplyVisibleStats(ChoiceData choice)
@@ -82,13 +124,52 @@ public static class ChoiceProcessor
         if (choice.unlockBuildings == null)
             return;
 
+        if (!string.IsNullOrWhiteSpace(choice.buildingChoiceGroup))
+        {
+            ApplyExclusiveBuildingChoice(choice);
+            return;
+        }
+
         foreach (var buildingId in choice.unlockBuildings)
         {
-            if (!string.IsNullOrWhiteSpace(buildingId))
-            {
-                // aici vei chema mai tarziu BuildingManager / UnlockSystem
-                Debug.Log("Unlocked building: " + buildingId);
-            }
+            if (string.IsNullOrWhiteSpace(buildingId))
+                continue;
+
+            if (GameState.Instance.UnlockBuilding(buildingId))
+                Debug.Log("Building unlocked: " + buildingId);
+            else
+                Debug.Log("Building was already unlocked: " + buildingId);
+        }
+    }
+
+    private static void ApplyExclusiveBuildingChoice(ChoiceData choice)
+    {
+        if (choice.unlockBuildings.Count != 1)
+        {
+            Debug.LogError(
+                "Exclusive building choice must contain exactly one selected building."
+            );
+            return;
+        }
+
+        string selectedBuildingId = choice.unlockBuildings[0];
+
+        if (GameState.Instance.ChooseExclusiveBuilding(
+            choice.buildingChoiceGroup,
+            selectedBuildingId,
+            choice.buildingChoiceOptions))
+        {
+            Debug.Log(
+                "Exclusive building chosen: " + selectedBuildingId +
+                " | Group: " + choice.buildingChoiceGroup
+            );
+        }
+        else
+        {
+            Debug.LogWarning(
+                "Exclusive building choice was rejected: " + selectedBuildingId +
+                " | Group: " + choice.buildingChoiceGroup
+            );
         }
     }
 }

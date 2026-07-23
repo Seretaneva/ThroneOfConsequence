@@ -28,6 +28,10 @@ public class AudienceSequenceController : MonoBehaviour
     private bool sequenceRunning = false;
     private Animator peasantAnim;
 
+    public bool IsThroneInteractionAllowed =>
+        !sequenceRunning &&
+        (peasantObject == null || !peasantObject.activeInHierarchy);
+
     private IEnumerator Start()
     {
         if (peasantObject != null)
@@ -118,6 +122,8 @@ private IEnumerator PrepareForVisitorRoutine()
             return;
         }
 
+        sequenceRunning = true;
+        canClickDoor = false;
         StartCoroutine(PlayCurrentEventSequence());
     }
 

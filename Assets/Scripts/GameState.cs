@@ -38,6 +38,8 @@ public class GameState : MonoBehaviour
 
     // Optional: buildings unlocked
     private HashSet<string> unlockedBuildings = new HashSet<string>();
+    private HashSet<string> permanentlyLockedBuildings = new HashSet<string>();
+    private Dictionary<string, string> buildingChoices = new Dictionary<string, string>();
 
     // Public read-only access
     public int Gold => gold;
@@ -46,6 +48,7 @@ public class GameState : MonoBehaviour
 
     public int Day => day;
     public string CurrentRank => currentRank;
+    public bool IsGameOver => gold <= 0 || respect <= 0 || intelligence <= 0;
 
     public int Cruelty => cruelty;
     public int Justice => justice;
@@ -176,13 +179,64 @@ public class GameState : MonoBehaviour
 
     #region Buildings
 
-    public void UnlockBuilding(string buildingId)
+    public bool UnlockBuilding(string buildingId)
     {
         if (string.IsNullOrWhiteSpace(buildingId))
-            return;
+            return false;
 
-        unlockedBuildings.Add(buildingId);
+        if (permanentlyLockedBuildings.Contains(buildingId))
+            return false;
+
+        if (!unlockedBuildings.Add(buildingId))
+            return false;
+
         OnStatsChanged?.Invoke();
+        return true;
+    }
+
+    public bool ChooseExclusiveBuilding(
+        string choiceGroup,
+        string selectedBuildingId,
+        IEnumerable<string> choiceOptions)
+    {
+        if (string.IsNullOrWhiteSpace(choiceGroup) ||
+            string.IsNullOrWhiteSpace(selectedBuildingId) ||
+            choiceOptions == null)
+        {
+            return false;
+        }
+
+        if (buildingChoices.ContainsKey(choiceGroup) ||
+            permanentlyLockedBuildings.Contains(selectedBuildingId))
+        {
+            return false;
+        }
+
+        bool selectedBuildingExists = false;
+
+        foreach (string buildingId in choiceOptions)
+        {
+            if (buildingId == selectedBuildingId)
+            {
+                selectedBuildingExists = true;
+                break;
+            }
+        }
+
+        if (!selectedBuildingExists)
+            return false;
+
+        buildingChoices.Add(choiceGroup, selectedBuildingId);
+        unlockedBuildings.Add(selectedBuildingId);
+
+        foreach (string buildingId in choiceOptions)
+        {
+            if (!string.IsNullOrWhiteSpace(buildingId) && buildingId != selectedBuildingId)
+                permanentlyLockedBuildings.Add(buildingId);
+        }
+
+        OnStatsChanged?.Invoke();
+        return true;
     }
 
     public bool HasBuilding(string buildingId)
@@ -193,12 +247,71 @@ public class GameState : MonoBehaviour
         return unlockedBuildings.Contains(buildingId);
     }
 
+    public bool IsBuildingPermanentlyLocked(string buildingId)
+    {
+        if (string.IsNullOrWhiteSpace(buildingId))
+            return false;
+
+        return permanentlyLockedBuildings.Contains(buildingId);
+    }
+
+    public bool HasMadeBuildingChoice(string choiceGroup)
+    {
+        if (string.IsNullOrWhiteSpace(choiceGroup))
+            return false;
+
+        return buildingChoices.ContainsKey(choiceGroup);
+    }
+
+    public string GetChosenBuilding(string choiceGroup)
+    {
+        if (string.IsNullOrWhiteSpace(choiceGroup))
+            return null;
+
+        return buildingChoices.TryGetValue(choiceGroup, out string buildingId)
+            ? buildingId
+            : null;
+    }
+
     public IEnumerable<string> GetUnlockedBuildings()
     {
         return unlockedBuildings;
     }
 
+    public IEnumerable<string> GetPermanentlyLockedBuildings()
+    {
+        return permanentlyLockedBuildings;
+    }
+
     #endregion
+
+    public string GetGameOverTitle()
+    {
+        if (gold <= 0)
+            return "Faliment";
+
+        if (respect <= 0)
+            return "Revolta";
+
+        if (intelligence <= 0)
+            return "Detronat de propria curte";
+
+        return "";
+    }
+
+    public string GetGameOverDescription()
+    {
+        if (gold <= 0)
+            return "Vistieria este goala. Soldatii isi parasesc posturile, iar creditorii revendica domeniul.";
+
+        if (respect <= 0)
+            return "Nimeni nu-ti mai recunoaste autoritatea. Multimea patrunde in sala tronului si domnia ta se incheie.";
+
+        if (intelligence <= 0)
+            return "Consilierii semneaza ordine in numele tau, iar tronul iti mai apartine doar in picturi.";
+
+        return "";
+    }
 
     #region Time
 

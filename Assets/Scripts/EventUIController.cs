@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class EventUIController : MonoBehaviour
@@ -39,6 +40,10 @@ public class EventUIController : MonoBehaviour
     private string defaultFreeTextPlaceholder;
     private TMP_FontAsset medievalFont;
     private MedievalFeedbackPanel medievalFeedbackPanel;
+    private Button continueButton;
+    private TMP_Text continueButtonText;
+    private string defaultContinueButtonText;
+    private bool gameOverDisplayed;
   
 
     private void Start()
@@ -48,6 +53,7 @@ public class EventUIController : MonoBehaviour
         ApplyMedievalButtonStyle();
         ApplyMedievalTextStyle();
         ApplyMedievalFeedbackStyle();
+        CacheContinueButton();
         HideEventUI();
 //         RoyalChronicle.Instance.AddEntry(
 //         "You became Village Leader."
@@ -82,6 +88,28 @@ public class EventUIController : MonoBehaviour
 
         if (feedbackStatsText != null)
             feedbackStatsText.text = "";
+    }
+
+    private void CacheContinueButton()
+    {
+        if (feedbackPanel == null)
+            return;
+
+        Button[] buttons = feedbackPanel.GetComponentsInChildren<Button>(true);
+
+        foreach (Button button in buttons)
+        {
+            if (button != null && button.gameObject.name == "ContinueButton")
+            {
+                continueButton = button;
+                continueButtonText = button.GetComponentInChildren<TMP_Text>(true);
+
+                if (continueButtonText != null)
+                    defaultContinueButtonText = continueButtonText.text;
+
+                return;
+            }
+        }
     }
 
     private void CacheDefaultFreeTextPlaceholder()
@@ -221,11 +249,24 @@ public class EventUIController : MonoBehaviour
             return;
         }
 
+        if (!ChoiceProcessor.CanApplyChoice(choice, out string failureReason))
+        {
+            if (feedbackReasonText != null)
+                feedbackReasonText.text = failureReason;
+
+            if (feedbackStatsText != null)
+                feedbackStatsText.text = "";
+
+            ShowFeedbackPanel();
+            return;
+        }
+
         lastResolvedChoice = choice;
 
-        ChoiceProcessor.ApplyChoice(choice);
+        if (!ChoiceProcessor.ApplyChoice(choice))
+            return;
 
-        pendingGoldEffect = choice.effects.gold;
+        pendingGoldEffect = choice.effects.gold - choice.goldCost;
         pendingRespectEffect = choice.effects.respect;
         pendingIntelligenceEffect = choice.effects.intelligence;
 
@@ -241,6 +282,9 @@ public class EventUIController : MonoBehaviour
 
         if (medievalFeedbackPanel != null)
             medievalFeedbackPanel.ShowResult();
+
+        if (TryShowGameOver())
+            return;
 
         ShowFeedbackPanel();
         // RoyalChronicle.Instance.AddEntry(
@@ -259,6 +303,14 @@ public class EventUIController : MonoBehaviour
         if (currentEvent == null)
         {
             Debug.LogError("currentEvent este null.");
+            return;
+        }
+
+        if (IsExclusiveBuildingEvent())
+        {
+            ClearFeedback();
+            SetFreeTextPlaceholder("Alege una dintre cele trei constructii.");
+            ShowChoicesPanel();
             return;
         }
 
@@ -373,11 +425,20 @@ public class EventUIController : MonoBehaviour
         if (medievalFeedbackPanel != null)
             medievalFeedbackPanel.ShowResult();
 
+        if (TryShowGameOver())
+            return;
+
         ShowFeedbackPanel();
     }
 
     public void ContinueToNextEvent()
     {
+        if (gameOverDisplayed || (GameState.Instance != null && GameState.Instance.IsGameOver))
+        {
+            RestartGame();
+            return;
+        }
+
         if (lastResolvedChoice != null)
             EventManager.Instance.PickNextEventFromChoice(lastResolvedChoice);
         else
@@ -387,6 +448,43 @@ public class EventUIController : MonoBehaviour
 
         if (audienceSequenceController != null)
             audienceSequenceController.FinishCurrentAudienceAndWaitForKnock();
+    }
+
+    private bool TryShowGameOver()
+    {
+        if (GameState.Instance == null || !GameState.Instance.IsGameOver)
+            return false;
+
+        gameOverDisplayed = true;
+
+        if (feedbackReasonText != null)
+        {
+            feedbackReasonText.text =
+                "Domnia s-a incheiat: " + GameState.Instance.GetGameOverTitle() +
+                "\n" + GameState.Instance.GetGameOverDescription();
+        }
+
+        if (feedbackStatsText != null)
+        {
+            feedbackStatsText.text =
+                "Ziua " + GameState.Instance.Day +
+                " | Rang: " + GameState.Instance.CurrentRank;
+        }
+
+        if (continueButtonText != null)
+            continueButtonText.text = "Incepe o domnie noua";
+
+        if (medievalFeedbackPanel != null)
+            medievalFeedbackPanel.ShowResult();
+
+        ShowFeedbackPanel();
+        return true;
+    }
+
+    private void RestartGame()
+    {
+        GameFlags.ClearFlags();
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
     private string FormatStatEffects(int gold, int respect, int intelligence)
@@ -434,6 +532,10 @@ public class EventUIController : MonoBehaviour
     public void ShowEvent(EventData eventData)
     {
         currentEvent = eventData;
+        gameOverDisplayed = false;
+
+        if (continueButtonText != null)
+            continueButtonText.text = defaultContinueButtonText;
 
         if (currentEvent == null)
         {
@@ -448,20 +550,73 @@ public class EventUIController : MonoBehaviour
             eventDescriptionText.text = currentEvent.description;
 
         if (choiceAText != null)
-            choiceAText.text = currentEvent.choiceA != null ? currentEvent.choiceA.choiceText : "";
+            SetChoicePresentation(choiceAText, currentEvent.choiceA);
 
         if (choiceBText != null)
-            choiceBText.text = currentEvent.choiceB != null ? currentEvent.choiceB.choiceText : "";
+            SetChoicePresentation(choiceBText, currentEvent.choiceB);
 
         if (choiceCText != null)
-            choiceCText.text = currentEvent.choiceC != null ? currentEvent.choiceC.choiceText : "";
+            SetChoicePresentation(choiceCText, currentEvent.choiceC);
 
         if (freeTextInput != null)
+        {
             freeTextInput.text = "";
+            freeTextInput.interactable = !IsExclusiveBuildingEvent();
+        }
 
         lastResolvedChoice = null;
-        SetFreeTextPlaceholder(defaultFreeTextPlaceholder);
+        SetFreeTextPlaceholder(
+            IsExclusiveBuildingEvent()
+                ? "Alege una dintre cele trei constructii."
+                : defaultFreeTextPlaceholder
+        );
         ClearFeedback();
         ShowChoicesPanel();
+    }
+
+    private void SetChoicePresentation(TMP_Text choiceText, ChoiceData choice)
+    {
+        if (choiceText == null)
+            return;
+
+        Button choiceButton = choiceText.GetComponentInParent<Button>();
+
+        if (choice == null)
+        {
+            choiceText.text = "";
+
+            if (choiceButton != null)
+                choiceButton.interactable = false;
+
+            return;
+        }
+
+        bool canApply = ChoiceProcessor.CanApplyChoice(choice, out string failureReason);
+        string details = "";
+
+        if (choice.goldCost > 0)
+            details = "Cost: " + choice.goldCost + " aur";
+
+        if (!canApply)
+        {
+            if (!string.IsNullOrEmpty(details))
+                details += " | ";
+
+            details += failureReason;
+        }
+
+        choiceText.text = string.IsNullOrEmpty(details)
+            ? choice.choiceText
+            : choice.choiceText + "\n<size=70%>" + details + "</size>";
+
+        if (choiceButton != null)
+            choiceButton.interactable = canApply;
+    }
+
+    private bool IsExclusiveBuildingEvent()
+    {
+        return currentEvent != null &&
+               currentEvent.tags != null &&
+               currentEvent.tags.Contains("building_choice");
     }
 }

@@ -64,7 +64,15 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        currentEvent = PickWeightedRandomEvent(validEvents);
+        int highestPriority = int.MinValue;
+
+        foreach (var ev in validEvents)
+            highestPriority = Mathf.Max(highestPriority, ev.priority);
+
+        List<EventData> highestPriorityEvents =
+            validEvents.FindAll(ev => ev.priority == highestPriority);
+
+        currentEvent = PickWeightedRandomEvent(highestPriorityEvents);
 
         if (currentEvent != null && currentEvent.unique && !string.IsNullOrEmpty(currentEvent.id))
             playedEventIds.Add(currentEvent.id);
