@@ -35,7 +35,7 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
         button = GetComponent<Button>();
         image = GetComponent<Image>();
         labels = GetComponentsInChildren<TMP_Text>(true);
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
+        medievalFont = PlayfairFontProvider.SemiBold;
         baseScale = rectTransform.localScale;
         targetScale = baseScale;
 
@@ -176,10 +176,10 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
                 continue;
 
             label.color = TextColor;
-            label.fontStyle |= FontStyles.Bold;
-            label.characterSpacing = 0.8f;
+            label.fontStyle = FontStyles.Normal;
+            label.characterSpacing = 0f;
             label.outlineColor = new Color32(18, 8, 2, 255);
-            label.outlineWidth = 0.22f;
+            label.outlineWidth = 0.07f;
 
             if (medievalFont != null)
                 label.font = medievalFont;
@@ -188,15 +188,15 @@ public class MedievalButtonAnimator : MonoBehaviour, IPointerEnterHandler, IPoin
             if (shadow == null)
                 shadow = label.gameObject.AddComponent<UnityEngine.UI.Shadow>();
 
-            shadow.effectColor = new Color(0f, 0f, 0f, 0.82f);
-            shadow.effectDistance = new Vector2(3f, -3f);
+            shadow.effectColor = new Color(0f, 0f, 0f, 0.62f);
+            shadow.effectDistance = new Vector2(1.5f, -1.5f);
 
             Outline outline = label.GetComponent<Outline>();
             if (outline == null)
                 outline = label.gameObject.AddComponent<Outline>();
 
-            outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.98f);
-            outline.effectDistance = new Vector2(2.2f, -2.2f);
+            outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.82f);
+            outline.effectDistance = new Vector2(1f, -1f);
         }
     }
 

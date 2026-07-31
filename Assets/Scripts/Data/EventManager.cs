@@ -9,6 +9,10 @@ public class EventManager : MonoBehaviour
     private EventData currentEvent;
 
     private HashSet<string> playedEventIds = new HashSet<string>();
+    private Queue<string> pendingEventIds = new Queue<string>();
+    private int resolvedEventCount;
+
+    public int ResolvedEventCount => resolvedEventCount;
 
     private void Awake()
     {
@@ -54,6 +58,9 @@ public class EventManager : MonoBehaviour
             if (ev.unique && !string.IsNullOrEmpty(ev.id) && playedEventIds.Contains(ev.id))
                 continue;
 
+            if (ev.priority > 0)
+                continue;
+
             validEvents.Add(ev);
         }
 
@@ -64,15 +71,7 @@ public class EventManager : MonoBehaviour
             return;
         }
 
-        int highestPriority = int.MinValue;
-
-        foreach (var ev in validEvents)
-            highestPriority = Mathf.Max(highestPriority, ev.priority);
-
-        List<EventData> highestPriorityEvents =
-            validEvents.FindAll(ev => ev.priority == highestPriority);
-
-        currentEvent = PickWeightedRandomEvent(highestPriorityEvents);
+        currentEvent = PickWeightedRandomEvent(validEvents);
 
         if (currentEvent != null && currentEvent.unique && !string.IsNullOrEmpty(currentEvent.id))
             playedEventIds.Add(currentEvent.id);
@@ -129,19 +128,57 @@ public class EventManager : MonoBehaviour
         if (!GameFlags.HasAllFlags(eventData.requiredFlags))
             return false;
 
+        if (eventData.requiredAnyFlags != null &&
+            eventData.requiredAnyFlags.Count > 0 &&
+            !GameFlags.HasAnyFlag(eventData.requiredAnyFlags))
+        {
+            return false;
+        }
+
         if (GameFlags.HasAnyFlag(eventData.blockedFlags))
             return false;
 
         return true;
     }
 
-    public void PickNextEventFromChoice(ChoiceData choice)
+    public void AdvanceAfterResolvedEvent(ChoiceData choice)
+    {
+        resolvedEventCount++;
+
+        if (resolvedEventCount % 5 == 4 && TryPickSpecialEvent())
+        {
+            QueueNextEvents(choice);
+            return;
+        }
+
+        if (TryPickNextEventFromChoice(choice))
+            return;
+
+        if (TryPickPendingEvent())
+            return;
+
+        PickRandomEvent();
+    }
+
+    private void QueueNextEvents(ChoiceData choice)
+    {
+        if (choice == null || choice.nextEventIds == null)
+            return;
+
+        foreach (string nextEventId in choice.nextEventIds)
+        {
+            if (!string.IsNullOrWhiteSpace(nextEventId))
+                pendingEventIds.Enqueue(nextEventId);
+        }
+    }
+
+    private bool TryPickNextEventFromChoice(ChoiceData choice)
     {
         if (events == null || events.Count == 0)
         {
             Debug.LogError("No events loaded.");
             currentEvent = null;
-            return;
+            return false;
         }
 
         if (choice != null && choice.nextEventIds != null && choice.nextEventIds.Count > 0)
@@ -164,10 +201,72 @@ public class EventManager : MonoBehaviour
                 if (currentEvent.unique && !string.IsNullOrEmpty(currentEvent.id))
                     playedEventIds.Add(currentEvent.id);
 
-                return;
+                return true;
             }
         }
 
-        PickRandomEvent();
+        return false;
+    }
+
+    private bool TryPickPendingEvent()
+    {
+        while (pendingEventIds.Count > 0)
+        {
+            string nextEventId = pendingEventIds.Dequeue();
+            EventData nextEvent = events.Find(e => e.id == nextEventId);
+
+            if (nextEvent == null || !IsEventValid(nextEvent))
+                continue;
+
+            if (nextEvent.unique &&
+                !string.IsNullOrEmpty(nextEvent.id) &&
+                playedEventIds.Contains(nextEvent.id))
+            {
+                continue;
+            }
+
+            currentEvent = nextEvent;
+
+            if (currentEvent.unique && !string.IsNullOrEmpty(currentEvent.id))
+                playedEventIds.Add(currentEvent.id);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TryPickSpecialEvent()
+    {
+        List<EventData> specialEvents = new List<EventData>();
+        int highestPriority = int.MinValue;
+
+        foreach (EventData ev in events)
+        {
+            if (ev == null || ev.priority <= 0 || !IsEventValid(ev))
+                continue;
+
+            if (ev.unique && !string.IsNullOrEmpty(ev.id) && playedEventIds.Contains(ev.id))
+                continue;
+
+            if (ev.priority > highestPriority)
+            {
+                highestPriority = ev.priority;
+                specialEvents.Clear();
+            }
+
+            if (ev.priority == highestPriority)
+                specialEvents.Add(ev);
+        }
+
+        if (specialEvents.Count == 0)
+            return false;
+
+        currentEvent = PickWeightedRandomEvent(specialEvents);
+
+        if (currentEvent != null && currentEvent.unique && !string.IsNullOrEmpty(currentEvent.id))
+            playedEventIds.Add(currentEvent.id);
+
+        return currentEvent != null;
     }
 }

@@ -32,6 +32,7 @@ public class EventData
 
     // Sistem nou
     public List<string> requiredFlags = new();
+    public List<string> requiredAnyFlags = new();
     public List<string> blockedFlags = new();
 
     // Storyline / chain

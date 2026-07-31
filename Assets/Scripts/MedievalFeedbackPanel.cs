@@ -11,21 +11,31 @@ public class MedievalFeedbackPanel : MonoBehaviour
 
     private TMP_Text reasonText;
     private TMP_Text statsText;
-    private TMP_FontAsset medievalFont;
+    private TMP_FontAsset bodyFont;
+    private TMP_FontAsset emphasisFont;
     private RectTransform sealTransform;
     private Image sealImage;
     private bool loading;
     private string loadingBaseText = "Se analizeaza raspunsul";
 
-    public void Initialize(TMP_Text reason, TMP_Text stats)
+    public void Initialize(
+        TMP_Text reason,
+        TMP_Text stats,
+        TMP_FontAsset selectedBodyFont = null,
+        TMP_FontAsset selectedEmphasisFont = null)
     {
         reasonText = reason;
         statsText = stats;
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
+        bodyFont = selectedBodyFont != null
+            ? selectedBodyFont
+            : PlayfairFontProvider.Regular;
+        emphasisFont = selectedEmphasisFont != null
+            ? selectedEmphasisFont
+            : PlayfairFontProvider.SemiBold;
 
         ApplyPanelStyle();
-        ApplyTextStyle(reasonText, TextColor, 38f);
-        ApplyTextStyle(statsText, StatColor, 30f);
+        ApplyTextStyle(reasonText, bodyFont, TextColor, 38f);
+        ApplyTextStyle(statsText, emphasisFont, StatColor, 30f);
         CreateLoadingSeal();
         ShowResult();
     }
@@ -106,37 +116,41 @@ public class MedievalFeedbackPanel : MonoBehaviour
         AddTrim("FeedbackInnerGlow", 0.84f, 0.92f, new Color(1f, 0.78f, 0.32f, 0.16f));
     }
 
-    private void ApplyTextStyle(TMP_Text text, Color color, float minSize)
+    private void ApplyTextStyle(
+        TMP_Text text,
+        TMP_FontAsset font,
+        Color color,
+        float minSize)
     {
         if (text == null)
             return;
 
-        if (medievalFont != null)
-            text.font = medievalFont;
+        if (font != null)
+            text.font = font;
 
         text.color = color;
-        text.fontStyle |= FontStyles.Bold;
-        text.characterSpacing = 0.7f;
+        text.fontStyle = FontStyles.Normal;
+        text.characterSpacing = 0f;
         text.enableAutoSizing = true;
-        text.fontSizeMin = Mathf.Max(18f, minSize * 0.55f);
+        text.fontSizeMin = Mathf.Max(19f, minSize * 0.62f);
         text.fontSizeMax = minSize;
         text.alignment = TextAlignmentOptions.Center;
         text.outlineColor = new Color32(18, 8, 2, 255);
-        text.outlineWidth = 0.22f;
+        text.outlineWidth = 0.05f;
 
         Outline outline = text.GetComponent<Outline>();
         if (outline == null)
             outline = text.gameObject.AddComponent<Outline>();
 
-        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.98f);
-        outline.effectDistance = new Vector2(2.4f, -2.4f);
+        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.82f);
+        outline.effectDistance = new Vector2(1f, -1f);
 
         UnityEngine.UI.Shadow shadow = GetExactShadow(text.gameObject);
         if (shadow == null)
             shadow = text.gameObject.AddComponent<UnityEngine.UI.Shadow>();
 
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.82f);
-        shadow.effectDistance = new Vector2(3.6f, -3.6f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.62f);
+        shadow.effectDistance = new Vector2(1.5f, -1.5f);
     }
 
     private void CreateLoadingSeal()

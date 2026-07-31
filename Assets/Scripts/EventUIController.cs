@@ -25,6 +25,11 @@ public class EventUIController : MonoBehaviour
     [SerializeField] private TMP_Text feedbackReasonText;
     [SerializeField] private TMP_Text feedbackStatsText;
 
+    [Header("Fonts")]
+    [SerializeField] private TMP_FontAsset titleFont;
+    [SerializeField] private TMP_FontAsset bodyFont;
+    [SerializeField] private TMP_FontAsset italicFont;
+
     [Header("Evaluators")]
     [SerializeField] private OllamaEvaluator ollamaEvaluator;
 
@@ -38,17 +43,61 @@ public class EventUIController : MonoBehaviour
     private int pendingRespectEffect;
     private int pendingIntelligenceEffect;
     private string defaultFreeTextPlaceholder;
-    private TMP_FontAsset medievalFont;
     private MedievalFeedbackPanel medievalFeedbackPanel;
     private Button continueButton;
     private TMP_Text continueButtonText;
     private string defaultContinueButtonText;
     private bool gameOverDisplayed;
   
+    private void OnValidate()
+    {
+        ApplyFontPreview(eventTitleText, titleFont);
+        ApplyFontPreview(choiceAText, titleFont);
+        ApplyFontPreview(choiceBText, titleFont);
+        ApplyFontPreview(choiceCText, titleFont);
+        ApplyFontPreview(feedbackStatsText, titleFont);
+
+        ApplyFontPreview(eventDescriptionText, bodyFont);
+        ApplyFontPreview(feedbackReasonText, bodyFont);
+
+        if (freeTextInput != null)
+        {
+            ApplyFontPreview(freeTextInput.textComponent, bodyFont);
+
+            if (freeTextInput.placeholder is TMP_Text placeholderText)
+                ApplyFontPreview(placeholderText, italicFont);
+        }
+
+        ApplyButtonFontPreview(choicesPanel);
+        ApplyButtonFontPreview(feedbackPanel);
+    }
+
+    private void ApplyFontPreview(TMP_Text text, TMP_FontAsset font)
+    {
+        if (text == null || font == null)
+            return;
+
+        text.font = font;
+        text.fontStyle = FontStyles.Normal;
+    }
+
+    private void ApplyButtonFontPreview(GameObject panel)
+    {
+        if (panel == null || titleFont == null)
+            return;
+
+        foreach (Button button in panel.GetComponentsInChildren<Button>(true))
+        {
+            TMP_Text label = button.GetComponentInChildren<TMP_Text>(true);
+            ApplyFontPreview(label, titleFont);
+        }
+    }
 
     private void Start()
     {
-        medievalFont = Resources.Load<TMP_FontAsset>("Fonts & Materials/Oswald Bold SDF");
+        titleFont ??= PlayfairFontProvider.SemiBold;
+        bodyFont ??= PlayfairFontProvider.Regular;
+        italicFont ??= PlayfairFontProvider.Italic;
         CacheDefaultFreeTextPlaceholder();
         ApplyMedievalButtonStyle();
         ApplyMedievalTextStyle();
@@ -126,8 +175,28 @@ public class EventUIController : MonoBehaviour
 
     private void ApplyMedievalButtonStyle()
     {
+        ConfigureChoicesLayout();
         AddMedievalStyleToButtons(choicesPanel);
         AddMedievalStyleToButtons(feedbackPanel);
+    }
+
+    private void ConfigureChoicesLayout()
+    {
+        if (choicesPanel == null)
+            return;
+
+        RectTransform panelRect = choicesPanel.GetComponent<RectTransform>();
+        if (panelRect != null)
+            panelRect.sizeDelta = new Vector2(panelRect.sizeDelta.x, 690f);
+
+        VerticalLayoutGroup layout = choicesPanel.GetComponent<VerticalLayoutGroup>();
+        if (layout != null)
+        {
+            layout.padding = new RectOffset(24, 24, 12, 12);
+            layout.spacing = 14f;
+            layout.childForceExpandHeight = false;
+            layout.childControlHeight = false;
+        }
     }
 
     private void AddMedievalStyleToButtons(GameObject panel)
@@ -141,7 +210,36 @@ public class EventUIController : MonoBehaviour
         {
             if (button != null && button.GetComponent<MedievalButtonAnimator>() == null)
                 button.gameObject.AddComponent<MedievalButtonAnimator>();
+
+            TMP_Text buttonText = button != null
+                ? button.GetComponentInChildren<TMP_Text>(true)
+                : null;
+
+            if (buttonText != null && titleFont != null)
+            {
+                buttonText.font = titleFont;
+                buttonText.fontStyle = FontStyles.Normal;
+                buttonText.characterSpacing = 0f;
+            }
+
+            if (button != null && button.gameObject.name.StartsWith("Choice"))
+                ConfigureChoiceButton(button);
         }
+    }
+
+    private void ConfigureChoiceButton(Button button)
+    {
+        RectTransform buttonRect = button.GetComponent<RectTransform>();
+        if (buttonRect != null)
+            buttonRect.sizeDelta = new Vector2(900f, 118f);
+
+        LayoutElement layoutElement = button.GetComponent<LayoutElement>();
+        if (layoutElement == null)
+            layoutElement = button.gameObject.AddComponent<LayoutElement>();
+
+        layoutElement.minHeight = 112f;
+        layoutElement.preferredHeight = 118f;
+        layoutElement.flexibleHeight = 0f;
     }
 
     private void ApplyMedievalFeedbackStyle()
@@ -154,23 +252,28 @@ public class EventUIController : MonoBehaviour
         if (medievalFeedbackPanel == null)
             medievalFeedbackPanel = feedbackPanel.AddComponent<MedievalFeedbackPanel>();
 
-        medievalFeedbackPanel.Initialize(feedbackReasonText, feedbackStatsText);
+        medievalFeedbackPanel.Initialize(
+            feedbackReasonText,
+            feedbackStatsText,
+            bodyFont,
+            titleFont
+        );
     }
 
     private void ApplyMedievalTextStyle()
     {
-        StyleMedievalText(eventTitleText, 46f, new Color(1f, 0.80f, 0.28f, 1f), 0.24f);
-        StyleMedievalText(eventDescriptionText, 32f, new Color(1f, 0.96f, 0.82f, 1f), 0.18f);
-        StyleMedievalText(choiceAText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
-        StyleMedievalText(choiceBText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
-        StyleMedievalText(choiceCText, 30f, new Color(1f, 0.94f, 0.74f, 1f), 0.20f);
+        StyleMedievalText(eventTitleText, titleFont, 46f, new Color(1f, 0.88f, 0.46f, 1f), 0.14f);
+        StyleMedievalText(eventDescriptionText, bodyFont, 34f, new Color(1f, 0.985f, 0.91f, 1f), 0.09f);
+        StyleChoiceText(choiceAText);
+        StyleChoiceText(choiceBText);
+        StyleChoiceText(choiceCText);
 
         if (freeTextInput != null)
         {
-            StyleMedievalText(freeTextInput.textComponent, 28f, new Color(1f, 0.97f, 0.86f, 1f), 0.18f);
+            StyleMedievalText(freeTextInput.textComponent, bodyFont, 29f, new Color(1f, 0.97f, 0.86f, 1f), 0.04f);
 
             if (freeTextInput.placeholder is TMP_Text placeholderText)
-                StyleMedievalText(placeholderText, 24f, new Color(1f, 0.86f, 0.54f, 0.82f), 0.14f);
+                StyleMedievalText(placeholderText, italicFont, 25f, new Color(1f, 0.86f, 0.54f, 0.82f), 0.03f);
 
             Image inputImage = freeTextInput.GetComponent<Image>();
             if (inputImage != null)
@@ -178,19 +281,24 @@ public class EventUIController : MonoBehaviour
         }
     }
 
-    private void StyleMedievalText(TMP_Text text, float maxSize, Color color, float outlineWidth)
+    private void StyleMedievalText(
+        TMP_Text text,
+        TMP_FontAsset font,
+        float maxSize,
+        Color color,
+        float outlineWidth)
     {
         if (text == null)
             return;
 
-        if (medievalFont != null)
-            text.font = medievalFont;
+        if (font != null)
+            text.font = font;
 
         text.color = color;
-        text.fontStyle |= FontStyles.Bold;
-        text.characterSpacing = 0.6f;
+        text.fontStyle = FontStyles.Normal;
+        text.characterSpacing = 0f;
         text.enableAutoSizing = true;
-        text.fontSizeMin = Mathf.Max(16f, maxSize * 0.55f);
+        text.fontSizeMin = Mathf.Max(18f, maxSize * 0.62f);
         text.fontSizeMax = maxSize;
         text.outlineColor = new Color32(18, 8, 2, 255);
         text.outlineWidth = outlineWidth;
@@ -199,15 +307,35 @@ public class EventUIController : MonoBehaviour
         if (outline == null)
             outline = text.gameObject.AddComponent<Outline>();
 
-        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.96f);
-        outline.effectDistance = new Vector2(2.2f, -2.2f);
+        outline.effectColor = new Color(0.02f, 0.01f, 0.004f, 0.82f);
+        outline.effectDistance = new Vector2(1f, -1f);
 
         Shadow shadow = GetExactShadow(text.gameObject);
         if (shadow == null)
             shadow = text.gameObject.AddComponent<Shadow>();
 
-        shadow.effectColor = new Color(0f, 0f, 0f, 0.78f);
-        shadow.effectDistance = new Vector2(3.2f, -3.2f);
+        shadow.effectColor = new Color(0f, 0f, 0f, 0.62f);
+        shadow.effectDistance = new Vector2(1.5f, -1.5f);
+    }
+
+    private void StyleChoiceText(TMP_Text text)
+    {
+        StyleMedievalText(
+            text,
+            titleFont,
+            38f,
+            new Color(1f, 0.94f, 0.74f, 1f),
+            0.07f
+        );
+
+        if (text == null)
+            return;
+
+        text.fontSizeMin = 25f;
+        text.fontSizeMax = 38f;
+        text.alignment = TextAlignmentOptions.Center;
+        text.lineSpacing = 5f;
+        text.margin = new Vector4(12f, 6f, 12f, 6f);
     }
 
     private Shadow GetExactShadow(GameObject target)
@@ -439,10 +567,7 @@ public class EventUIController : MonoBehaviour
             return;
         }
 
-        if (lastResolvedChoice != null)
-            EventManager.Instance.PickNextEventFromChoice(lastResolvedChoice);
-        else
-            EventManager.Instance.PickRandomEvent();
+        EventManager.Instance.AdvanceAfterResolvedEvent(lastResolvedChoice);
 
         HideEventUI();
 
@@ -607,7 +732,7 @@ public class EventUIController : MonoBehaviour
 
         choiceText.text = string.IsNullOrEmpty(details)
             ? choice.choiceText
-            : choice.choiceText + "\n<size=70%>" + details + "</size>";
+            : choice.choiceText + "\n<size=75%>" + details + "</size>";
 
         if (choiceButton != null)
             choiceButton.interactable = canApply;
