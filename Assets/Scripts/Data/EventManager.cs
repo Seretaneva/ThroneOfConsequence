@@ -31,7 +31,18 @@ public class EventManager : MonoBehaviour
         }
 
         events = EventDatabaseLoader.LoadedDatabase.events;
-        PickRandomEvent();
+
+        GameSaveData save = SaveManager.GetPendingLoad();
+
+        if (save != null)
+        {
+            RestoreSaveData(save);
+            SaveManager.FinishPendingLoad();
+        }
+        else
+        {
+            PickRandomEvent();
+        }
     }
 
     public EventData GetCurrentEvent()
@@ -158,6 +169,28 @@ public class EventManager : MonoBehaviour
             return;
 
         PickRandomEvent();
+    }
+
+    public void WriteSaveData(GameSaveData data)
+    {
+        data.resolvedEventCount = resolvedEventCount;
+        data.currentEventId = currentEvent != null ? currentEvent.id : "";
+        data.playedEventIds = new List<string>(playedEventIds);
+        data.pendingEventIds = new List<string>(pendingEventIds);
+    }
+
+    private void RestoreSaveData(GameSaveData data)
+    {
+        resolvedEventCount = Mathf.Max(0, data.resolvedEventCount);
+        playedEventIds = new HashSet<string>(data.playedEventIds ?? new List<string>());
+        pendingEventIds = new Queue<string>(data.pendingEventIds ?? new List<string>());
+        currentEvent = events.Find(eventData => eventData.id == data.currentEventId);
+
+        if (currentEvent == null)
+        {
+            Debug.LogWarning("Saved event no longer exists. Picking a valid event.");
+            PickRandomEvent();
+        }
     }
 
     private void QueueNextEvents(ChoiceData choice)

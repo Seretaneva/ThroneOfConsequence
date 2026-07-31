@@ -568,6 +568,7 @@ public class EventUIController : MonoBehaviour
         }
 
         EventManager.Instance.AdvanceAfterResolvedEvent(lastResolvedChoice);
+        SaveManager.SaveGame();
 
         HideEventUI();
 
@@ -608,6 +609,7 @@ public class EventUIController : MonoBehaviour
 
     private void RestartGame()
     {
+        SaveManager.DeleteSave();
         GameFlags.ClearFlags();
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }

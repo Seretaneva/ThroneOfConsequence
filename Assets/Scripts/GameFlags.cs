@@ -30,6 +30,25 @@ public static class GameFlags
         flags.Clear();
     }
 
+    public static List<string> GetAllFlags()
+    {
+        return new List<string>(flags);
+    }
+
+    public static void RestoreFlags(IEnumerable<string> savedFlags)
+    {
+        flags.Clear();
+
+        if (savedFlags == null)
+            return;
+
+        foreach (string flag in savedFlags)
+        {
+            if (!string.IsNullOrWhiteSpace(flag))
+                flags.Add(Normalize(flag));
+        }
+    }
+
     public static bool HasAllFlags(List<string> requiredFlags)
     {
         if (requiredFlags == null) return true;

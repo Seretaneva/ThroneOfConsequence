@@ -67,9 +67,77 @@ public class GameState : MonoBehaviour
     private void Awake()
     {
         if (Instance == null)
+        {
             Instance = this;
+            GameSaveData save = SaveManager.GetPendingLoad();
+
+            if (save != null)
+                RestoreSaveData(save);
+        }
         else
             Destroy(gameObject);
+    }
+
+    public void WriteSaveData(GameSaveData data)
+    {
+        data.gold = gold;
+        data.intelligence = intelligence;
+        data.respect = respect;
+        data.day = day;
+        data.currentRank = currentRank;
+        data.cruelty = cruelty;
+        data.justice = justice;
+        data.mercy = mercy;
+        data.greed = greed;
+        data.authority = authority;
+        data.wisdom = wisdom;
+        data.peasants = peasants;
+        data.nobles = nobles;
+        data.merchants = merchants;
+        data.army = army;
+        data.clergy = clergy;
+        data.scholars = scholars;
+        data.unlockedBuildings = new List<string>(unlockedBuildings);
+        data.permanentlyLockedBuildings = new List<string>(permanentlyLockedBuildings);
+
+        foreach (KeyValuePair<string, string> choice in buildingChoices)
+        {
+            data.buildingChoiceGroups.Add(choice.Key);
+            data.buildingChoiceIds.Add(choice.Value);
+        }
+    }
+
+    private void RestoreSaveData(GameSaveData data)
+    {
+        gold = data.gold;
+        intelligence = data.intelligence;
+        respect = data.respect;
+        day = data.day;
+        currentRank = string.IsNullOrWhiteSpace(data.currentRank) ? "Village Leader" : data.currentRank;
+        cruelty = data.cruelty;
+        justice = data.justice;
+        mercy = data.mercy;
+        greed = data.greed;
+        authority = data.authority;
+        wisdom = data.wisdom;
+        peasants = data.peasants;
+        nobles = data.nobles;
+        merchants = data.merchants;
+        army = data.army;
+        clergy = data.clergy;
+        scholars = data.scholars;
+        unlockedBuildings = new HashSet<string>(data.unlockedBuildings ?? new List<string>());
+        permanentlyLockedBuildings = new HashSet<string>(data.permanentlyLockedBuildings ?? new List<string>());
+        buildingChoices.Clear();
+
+        int choiceCount = Mathf.Min(
+            data.buildingChoiceGroups?.Count ?? 0,
+            data.buildingChoiceIds?.Count ?? 0);
+
+        for (int i = 0; i < choiceCount; i++)
+            buildingChoices[data.buildingChoiceGroups[i]] = data.buildingChoiceIds[i];
+
+        GameFlags.RestoreFlags(data.flags);
     }
 
     #region Visible Stat Modifiers
